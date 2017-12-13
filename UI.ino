@@ -99,7 +99,7 @@ void cmd_callback( int idx, int v, int up ) {
       spring(pin);
       return;
     case CMD_HOME:
-      runHome(pin, atoi( cmd.arg( 2 ), atoi( cmd.arg( 3 ));
+      runHome(pin,atoi( cmd.arg( 2 )),atoi( cmd.arg( 3 )));
       return;
   }
 }

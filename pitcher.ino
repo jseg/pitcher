@@ -43,7 +43,7 @@ Encoder EncYaw(YAW_A, YAW_B); ////instantiate pitch encoder, uses INT4 and INT5
 Atm_command cmd;  //This object is the primary way to control the machine during development     
 char cmd_buffer[80];   // input buffer
 enum { CMD_HIGH, CMD_LOW, CMD_READ, CMD_AREAD, CMD_AWRITE, //enum for switchcase in callback
-       CMD_MODE_INPUT, CMD_MODE_OUTPUT, CMD_MODE_PULLUP, CMD_LOAD, CMD_NUMKEY, CMD_EEPROMSETUP CMD_PITCH, CMD_YAW, CMD_SPRING, CMD_HOME };
+       CMD_MODE_INPUT, CMD_MODE_OUTPUT, CMD_MODE_PULLUP, CMD_LOAD, CMD_NUMKEY, CMD_EEPROMSETUP, CMD_PITCH, CMD_YAW, CMD_SPRING, CMD_HOME };
 const char cmdlist[] = //must be in the same order as enum
       "high low read aread awrite mode_input mode_output mode_pullup load numkey eepromsetup pitch yaw spring home"; 
       
@@ -106,15 +106,15 @@ void setup() {
   yawHome.begin(3000)                                   //initialize timer at 3 secs
          .onTimer( [] ( int idx, int v, int up ) {      //lambda function that turns off motor
       yaw(0);
-    })
+    });
   pitchHome.begin(3000)                                   //initialize timer at 3 secs
          .onTimer( [] ( int idx, int v, int up ) {      //lambda function that turns off motor
       pitch(0);
-    })
+    });
   springHome.begin(3000)                                   //initialize timer at 3 secs
          .onTimer( [] ( int idx, int v, int up ) {      //lambda function that turns off motor
       spring(0);
-    }) 
+    }); 
 
   loadEEPromPresets();                                  //load presets from memory
   help();

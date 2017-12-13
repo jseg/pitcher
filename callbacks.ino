@@ -37,13 +37,16 @@ void savePreset(){
        }
    }
 }
+
 void ballReadyCB(int idx, int v, int up){                //called when ballReady microswitch goes HIGH
   newBall.trigger(newBall.EVT_OFF);       //turn off newBall signal
   ballLift.trigger(ballLift.EVT_OFF);      //turn on ball lift signal LOW to run motor
   Serial.println(F("Ball Ready"));        //debug feedback
+}
 
 void runPreset(int num){
   return;
+}
 
 void pitch(int duty){
   if (duty >= 0) {
@@ -72,19 +75,20 @@ void yaw(int duty){
 }
 
 void spring(int duty){
-  if (duty >= 0) {
-    digitalWrite(SPRING_F, LOW);
-    digitalWrite(SPRING_R, HIGH);
-    Timer5.setPwmDuty(SPRING_PWM,duty);
-  }
-  else {
-    digitalWrite(SRING_F, HIGH);
-    digitalWrite(SPRING_R, LOW);
-    Timer5.setPwmDuty(SPRING_PWM,abs(duty));
-  }
+//  if (duty >= 0) {
+//    digitalWrite(SPRING_F, LOW);
+//    digitalWrite(SPRING_R, HIGH);
+//    Timer5.setPwmDuty(SPRING_PWM,duty);
+//  }
+//  else {
+//    digitalWrite(SRING_F, HIGH);
+//    digitalWrite(SPRING_R, LOW);
+//    Timer5.setPwmDuty(SPRING_PWM,abs(duty));
+//  }
+return;
 }
 
-runHome(int pitchDuty=300, int yawDuty=300, int springDuty=300){
+void runHome(int pitchDuty, int yawDuty, int springDuty){
     pitch(pitchDuty);
     yaw(yawDuty);
     spring(springDuty);
