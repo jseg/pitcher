@@ -91,7 +91,8 @@ void setup() {
       .onCommand( cmd_callback );                       //assign callback, located in UI.ino
   
   //Ball Load Sequence Set-up
-  ballReady.trace(Serial);
+  newBall.begin(LATCH);                                 //Starts in IDLE state, BALL_IN: LOW
+    ballReady.trace(Serial);
   loadSense.trace(Serial);
   newBall.begin(LATCH);                                 //Starts in IDLE state, BALL_IN: LOW
   ballReady.begin(BALL_IN,20)                            //when ballReady is HIGH for 20ms:
@@ -99,7 +100,24 @@ void setup() {
                                                         //make lambda function: https://github.com/tinkerspy/Automaton/wiki/Introduction
   ballLift.begin(BALL_LOAD);                            //Starts in IDLE state, BALL_LOAD: LOW
   loadSense.begin(LOADED,20)                            //when loadSense is HIGH for 20ms:
+           .onChange(HIGH,ballLift,ballLift.EVT_ON);   //turn off the lift motor
+
+  //Home Motors Sequence Set-up
+  yawHome.begin(3000)                                   //initialize timer at 3 secs
+         .onTimer( [] ( int idx, int v, int up ) {      //lambda function that turns off motor
+      yaw(0);
+    })
+  pitchHome.begin(3000)                                   //initialize timer at 3 secs
+         .onTimer( [] ( int idx, int v, int up ) {      //lambda function that turns off motor
+      pitch(0);
+    })
+  springHome.begin(3000)                                   //initialize timer at 3 secs
+         .onTimer( [] ( int idx, int v, int up ) {      //lambda function that turns off motor
+      spring(0);
+    }) 
+
   loadEEPromPresets();                                  //load presets from memory
+  help();
 }
 
 /////////////////////////////////
