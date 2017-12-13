@@ -11,9 +11,10 @@ void keypadEvent(KeypadEvent key){
         case '7':
         case '8':
         case '9':
-           runPreset(atoi( cmd.arg(key) ));     //function to move set points to a new preset
+          runPreset(atoi( cmd.arg(key) ));     //function to move set points to a new preset
            Serial.print(F("Pressed: "));        //feedback
            Serial.println(key);
+          //callback
           break;
         case 'a':
             newBall.trigger(newBall.EVT_ON);
@@ -88,6 +89,17 @@ void cmd_callback( int idx, int v, int up ) {
     case CMD_EEPROMSETUP:  //Comand to set-up eeprom on a new unit
       loadDefaultPresets();
       savePreset();
+    case CMD_PITCH:
+      pitch(pin);
+      return;
+    case CMD_YAW:
+      yaw(pin);
+      return;
+    case CMD_SPRING:
+      spring(pin);
+      return;
+    case CMD_HOME:
+      runHome(pin, atoi( cmd.arg( 2 ), atoi( cmd.arg( 3 ));
       return;
   }
 }
@@ -105,4 +117,6 @@ void help(){
   Serial.println(F("load            *load a ball in the launcher"));
   Serial.println(F("num_key num     *simulate a number key"));
   Serial.println(F("eepromSetup     *setup a new eeprom"));
+  Serial.println(F("eepromSetup     *setup a new eeprom"));
+  
 }

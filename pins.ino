@@ -24,18 +24,18 @@ void initializeOutputs(){  //set pin modes and intial states
   digitalWrite(SOUND_EIGHT,HIGH);
 
   //Motors
-  pinMode(PullGrabPWM,OUTPUT);
-  digitalWrite(PullGrabPWM,LOW);
-  pinMode(PullGrabD,OUTPUT);
-  digitalWrite(PullGrabD,LOW);
-  pinMode(PITCH_PWM,OUTPUT);
-  digitalWrite(PITCH_PWM,LOW);
+//  pinMode(SPRING_PWM,OUTPUT);
+//  digitalWrite(SPRING_PWM,LOW);
+  pinMode(SPRING_D,OUTPUT);
+  digitalWrite(SPRING_D,LOW);
+//  pinMode(PITCH_PWM,OUTPUT);
+//  digitalWrite(PITCH_PWM,LOW);
   pinMode(PITCH_F,OUTPUT);
   digitalWrite(PITCH_F,LOW);
   pinMode(PITCH_R,OUTPUT);
   digitalWrite(PITCH_R,LOW);
-  pinMode(YAW_PWM,OUTPUT);
-  digitalWrite(YAW_PWM,LOW);
+//  pinMode(YAW_PWM,OUTPUT);
+//  digitalWrite(YAW_PWM,LOW);
   pinMode(YAW_F,OUTPUT);
   digitalWrite(YAW_F,LOW);
   pinMode(YAW_R,OUTPUT);
@@ -55,5 +55,5 @@ void initializeOutputs(){  //set pin modes and intial states
 
   //Digital Signals
   pinMode(LATCH,OUTPUT);
-  digitalWrite(LATCH,LOW);
+  digitalWrite(LATCH,HIGH);
 }

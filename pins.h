@@ -32,8 +32,8 @@
 #define SOUND_EIGHT         6      // the pin number of the                      Sound 8  input PIn  
 
 //Motor Controls
-#define PullGrabPWM         44     // the pin number of the Pull Grab           Servo PWM
-#define PullGrabD           48     // direction of pullgrab                     
+#define SPRING_PWM         44     // the pin number of the Pull Grab           Servo PWM
+#define SPRING_D           48     // direction of pullgrab                     
 #define PITCH_PWM           46     // the pin number of the Up Down             Servo PWM SPEED  UpDownPWM
 #define PITCH_F             52     // the pin number of the Up Down             Servo Rev DIR1   UpDownF
 #define PITCH_R             53     // the pin number of the Up Down             Servo Fwd DIR2   UpDownR
