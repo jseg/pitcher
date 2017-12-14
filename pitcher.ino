@@ -61,6 +61,9 @@ Atm_timer yawHome;   //controlls the amount of time the motors run during homing
 Atm_timer pitchHome;
 Atm_timer springHome;
 
+//Temporary Timer Object
+Atm_timer printEncoders;
+
 
 
 
@@ -116,6 +119,10 @@ void setup() {
       spring(0);
     }); 
 
+  printEncoders.begin(300)
+          .onTimer(printPos)
+          .repeat(-1)
+          .start();
   loadEEPromPresets();                                  //load presets from memory
   help();
 }
