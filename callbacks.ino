@@ -65,7 +65,7 @@ void yaw(int duty){
   if (duty >= 0) {
     digitalWrite(YAW_F, LOW);
     digitalWrite(YAW_R, HIGH);
-    Timer5.setPwmDuty(PITCH_PWM,duty);
+    Timer5.setPwmDuty(YAW_PWM,duty);
   }
   else {
     digitalWrite(YAW_F, HIGH);
@@ -75,16 +75,14 @@ void yaw(int duty){
 }
 
 void spring(int duty){
-//  if (duty >= 0) {
-//    digitalWrite(SPRING_F, LOW);
-//    digitalWrite(SPRING_R, HIGH);
-//    Timer5.setPwmDuty(SPRING_PWM,duty);
-//  }
-//  else {
-//    digitalWrite(SRING_F, HIGH);
-//    digitalWrite(SPRING_R, LOW);
-//    Timer5.setPwmDuty(SPRING_PWM,abs(duty));
-//  }
+  if (duty >= 0) {
+    digitalWrite(SPRING_D, HIGH);
+    Timer5.setPwmDuty(SPRING_PWM,duty);
+   }
+  else {
+    digitalWrite(SPRING_D, LOW);
+    Timer5.setPwmDuty(SPRING_PWM,abs(duty));
+  }
 return;
 }
 

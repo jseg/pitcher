@@ -119,7 +119,7 @@ void setup() {
       spring(0);
     }); 
 
-  printEncoders.begin(300)
+  printEncoders.begin(1000)
           .onTimer(printPos)
           .repeat(-1)
           .start();
