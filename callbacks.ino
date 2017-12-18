@@ -104,3 +104,8 @@ void printPos(int idx, int v, int up ){
   Serial.println(EncYaw.read());
 }
 
+void encoders(){
+  pitchPos = EncPitch.read();
+  yawPos = EncYaw.read();
+}
+
