@@ -91,12 +91,18 @@ void cmd_callback( int idx, int v, int up ) {
       savePreset();
     case CMD_PITCH:
       pitch(pin);
+      Serial.print(F("Pitch: "));
+      Serial.println(pin);
       return;
     case CMD_YAW:
       yaw(pin);
+      Serial.print(F("Yaw: "));
+      Serial.println(pin);
       return;
     case CMD_SPRING:
       spring(pin);
+      Serial.print(F("Spring: "));
+      Serial.println(pin);
       return;
     case CMD_HOME:
       runHome(pin,atoi( cmd.arg( 2 )),atoi( cmd.arg( 3 )));
