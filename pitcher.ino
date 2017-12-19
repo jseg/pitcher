@@ -33,6 +33,8 @@ Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );//insta
 
 //Encoders
 //Documentation: https://www.pjrc.com/teensy/td_libs_Encoder.html
+int yawPos = 0; //value of yaw encoder
+int pitchPos = 0; //value of pitch encoder
 Encoder EncPitch(PITCH_A, PITCH_B); //instantiate pitch encoder, uses INT0 and INT1
 Encoder EncYaw(YAW_A, YAW_B); ////instantiate pitch encoder, uses INT4 and INT5
 
@@ -62,7 +64,7 @@ Atm_timer pitchHome;
 Atm_timer springHome;
 
 //Temporary Timer Object
-Atm_timer printEncoders;
+//Atm_timer printEncoders;
 
 
 
@@ -119,10 +121,10 @@ void setup() {
       spring(0);
     }); 
 
-  printEncoders.begin(1000)
-          .onTimer(printPos)
-          .repeat(-1)
-          .start();
+//  printEncoders.begin(1000)
+//          .onTimer(printPos)
+//          .repeat(-1)
+//          .start();
   loadEEPromPresets();                                  //load presets from memory
   help();
 }
@@ -133,5 +135,6 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   char key = keypad.getKey();                           //poll the keypad for pressed keys
+  encoders();                                           //passes volatile encoder states to globals for use in control loop
   automaton.run();                                      //run the state machines
 }

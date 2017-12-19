@@ -95,10 +95,24 @@ void runHome(int pitchDuty, int yawDuty, int springDuty){
     springHome.start();
 }
 
-void printPos(int idx, int v, int up ){
-  Serial.print(F("Pitch Encoder: "));
-  Serial.println(EncPitch.read());
-  Serial.print(F("Yaw Encoder: "));
-  Serial.println(EncYaw.read());
+//void printPos(int idx, int v, int up ){
+//  Serial.print(F("Pitch Encoder: "));
+//  Serial.println(EncPitch.read());
+//  Serial.print(F("Yaw Encoder: "));
+//  Serial.println(EncYaw.read());
+//}
+
+void encoders(){
+  if (pitchPos != EncPitch.read()){
+    pitchPos = EncPitch.read();
+    Serial.print(F("Pitch Encoder: "));
+    Serial.println(EncPitch.read());
+  }
+  if (yawPos != EncYaw.read()){
+    yawPos = EncYaw.read();
+    Serial.print(F("Yaw Encoder: "));
+    Serial.println(EncYaw.read());
+  }
+  
 }
 
