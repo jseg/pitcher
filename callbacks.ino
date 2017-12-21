@@ -50,26 +50,26 @@ void runPreset(int num){
 
 void pitch(int duty){
   if (duty >= 0) {
-    digitalWrite(PITCH_F, LOW);
-    digitalWrite(PITCH_R, HIGH);
+    digitalWrite(PITCH_F, HIGH);
+    digitalWrite(PITCH_R, LOW);
     Timer5.setPwmDuty(PITCH_PWM,duty);
   }
   else {
-    digitalWrite(PITCH_F, HIGH);
-    digitalWrite(PITCH_R, LOW);
+    digitalWrite(PITCH_F, LOW);
+    digitalWrite(PITCH_R, HIGH);
     Timer5.setPwmDuty(PITCH_PWM,abs(duty));
   }
 }
 
 void yaw(int duty){
   if (duty >= 0) {
-    digitalWrite(YAW_F, LOW);
-    digitalWrite(YAW_R, HIGH);
+    digitalWrite(YAW_F, HIGH);
+    digitalWrite(YAW_R, LOW);
     Timer5.setPwmDuty(YAW_PWM,duty);
   }
   else {
-    digitalWrite(YAW_F, HIGH);
-    digitalWrite(YAW_R, LOW);
+    digitalWrite(YAW_F, LOW);
+    digitalWrite(YAW_R, HIGH);
     Timer5.setPwmDuty(YAW_PWM,abs(duty));
   }
 }
@@ -86,10 +86,12 @@ void spring(int duty){
 return;
 }
 
-void runHome(int pitchDuty, int yawDuty, int springDuty){
-    pitch(pitchDuty);
-    yaw(yawDuty);
-    spring(springDuty);
+void runHome(){
+    pitchPID.SetMode(MANUAL);  //Turn off the PID loops
+    yawPID.SetMode(MANUAL);    
+    pitch(4096);
+    yaw(4096);
+    spring(4096);
     pitchHome.start();
     yawHome.start();
     springHome.start();
@@ -112,6 +114,18 @@ void encoders(){
     yawPos = EncYaw.read();
     Serial.print(F("Yaw Encoder: "));
     Serial.println(EncYaw.read());
+  }
+  
+}
+
+void pid(){
+  pitchPID.Compute();
+  yawPID.Compute();
+  if (pitchPID.GetMode()){
+    pitch((int)pitchOut);
+  }
+  if (yawPID.GetMode()){
+    yaw((int)yawOut);
   }
   
 }

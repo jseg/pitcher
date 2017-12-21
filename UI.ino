@@ -7,6 +7,10 @@ void keypadEvent(KeypadEvent key){
         case '3':
         case '4':
         case '5':
+          pitchSet = 37;
+          yawSet = 37;
+          pitchPID.SetMode(AUTOMATIC);
+          yawPID.SetMode(AUTOMATIC);
         case '6':
         case '7':
         case '8':
@@ -105,7 +109,23 @@ void cmd_callback( int idx, int v, int up ) {
       Serial.println(pin);
       return;
     case CMD_HOME:
-      runHome(pin,atoi( cmd.arg( 2 )),atoi( cmd.arg( 3 )));
+      runHome();
+      return;
+    case CMD_PID:
+      if (pin == 1){
+        pitchPID.SetMode(AUTOMATIC);
+        yawPID.SetMode(AUTOMATIC);
+      }
+      else{
+        pitchPID.SetMode(MANUAL);
+        yawPID.SetMode(MANUAL);
+      }
+     return;
+    case CMD_YAWSET:
+      yawPID.SetTunings(pin,atoi(cmd.arg(2)),atoi(cmd.arg(3)));
+      return;
+    case CMD_PITCHSET:
+      pitchPID.SetTunings(pin,atoi(cmd.arg(2)),atoi(cmd.arg(3)));
       return;
   }
 }
