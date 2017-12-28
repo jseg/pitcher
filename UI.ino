@@ -115,17 +115,39 @@ void cmd_callback( int idx, int v, int up ) {
       if (pin == 1){
         pitchPID.SetMode(AUTOMATIC);
         yawPID.SetMode(AUTOMATIC);
+        Serial.println(F("PID Loops On"));
       }
       else{
         pitchPID.SetMode(MANUAL);
         yawPID.SetMode(MANUAL);
+        Serial.println(F("PID Loops Off"));
       }
      return;
     case CMD_YAWSET:
       yawPID.SetTunings(pin,atoi(cmd.arg(2)),atoi(cmd.arg(3)));
+      Serial.print(F("Yaw kp: "));
+      Serial.print(pin);
+      Serial.print(F(", ki: "));
+      Serial.print(atoi(cmd.arg(2)));
+      Serial.print(F(", kd: "));
+      Serial.println(atoi(cmd.arg(3)));
       return;
     case CMD_PITCHSET:
       pitchPID.SetTunings(pin,atoi(cmd.arg(2)),atoi(cmd.arg(3)));
+      Serial.print(F("Pitch kp: "));
+      Serial.print(pin);
+      Serial.print(F(", ki: "));
+      Serial.print(atoi(cmd.arg(2)));
+      Serial.print(F(", kd: "));
+      Serial.println(atoi(cmd.arg(3)));
+      return;
+    case CMD_MOVE:
+      pitchSet = pin;
+      yawSet = atoi(cmd.arg(2));
+      Serial.print(F("Pitch Setpoint: "));
+      Serial.println(pin);
+      Serial.print(F("Yaw Setpoint: "));
+      Serial.println(atoi(cmd.arg(2)));
       return;
   }
 }

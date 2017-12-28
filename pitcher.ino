@@ -41,8 +41,8 @@ Encoder EncYaw(YAW_A, YAW_B); ////instantiate pitch encoder, uses INT4 and INT5
 //PID Loops 
 bool pitchEn, yawEn;            //Enable booleans for PID loops
 double pitchSet, pitchIn, pitchOut, yawSet, yawIn, yawOut;  //PID loop inputs and outputs
-double pitchKp = 2, pitchKi= 5, pitchKd=1;  //Initial pitch PID parameters
-double yawKp = 2, yawKi= 5, yawKd=1;  //Initial pitch PID parameters
+double pitchKp = 10, pitchKi= 0, pitchKd=5;  //Initial pitch PID parameters
+double yawKp = 10, yawKi= 0, yawKd=5;  //Initial pitch PID parameters
 PID pitchPID(&pitchIn, &pitchOut, &pitchSet,pitchKp,pitchKi,pitchKd, DIRECT);
 PID yawPID(&yawIn, &yawOut, &yawSet,yawKp,yawKi,yawKd, DIRECT);
 
@@ -53,9 +53,9 @@ PID yawPID(&yawIn, &yawOut, &yawSet,yawKp,yawKi,yawKd, DIRECT);
 Atm_command cmd;  //This object is the primary way to control the machine during development     
 char cmd_buffer[80];   // input buffer
 enum { CMD_HIGH, CMD_LOW, CMD_READ, CMD_AREAD, CMD_AWRITE, //enum for switchcase in callback
-       CMD_MODE_INPUT, CMD_MODE_OUTPUT, CMD_MODE_PULLUP, CMD_LOAD, CMD_NUMKEY, CMD_EEPROMSETUP, CMD_PITCH, CMD_YAW, CMD_SPRING, CMD_HOME, CMD_PID, CMD_YAWSET, CMD_PITCHSET };
+       CMD_MODE_INPUT, CMD_MODE_OUTPUT, CMD_MODE_PULLUP, CMD_LOAD, CMD_NUMKEY, CMD_EEPROMSETUP, CMD_PITCH, CMD_YAW, CMD_SPRING, CMD_HOME, CMD_PID, CMD_YAWSET, CMD_PITCHSET, CMD_MOVE };
 const char cmdlist[] = //must be in the same order as enum
-      "high low read aread awrite mode_input mode_output mode_pullup load numkey eepromsetup pitch yaw spring home pid yawset pitchset"; 
+      "high low read aread awrite mode_input mode_output mode_pullup load numkey eepromsetup pitch yaw spring home pid yawset pitchset move"; 
       
 //Objects related to the Ball Load Sequence
 //"LED" state machine reference: https://github.com/tinkerspy/Automaton/wiki/The-led-machine

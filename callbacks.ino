@@ -121,7 +121,7 @@ void encoders(){
 void pid(){
   pitchPID.Compute();
   yawPID.Compute();
-  if (pitchPID.GetMode()){
+  if (pitchPID.GetMode()){  //if its turned on pass PID output to speed function
     pitch((int)pitchOut);
   }
   if (yawPID.GetMode()){
