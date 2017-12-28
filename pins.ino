@@ -55,5 +55,5 @@ void initializeOutputs(){  //set pin modes and intial states
 
   //Digital Signals
   pinMode(LATCH,OUTPUT);
-  digitalWrite(LATCH,HIGH);
+  digitalWrite(LATCH,LOW);
 }

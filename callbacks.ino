@@ -89,12 +89,12 @@ return;
 void runHome(){
     pitchPID.SetMode(MANUAL);  //Turn off the PID loops
     yawPID.SetMode(MANUAL);    
-    pitch(4096);
-    yaw(4096);
-    spring(4096);
+    pitch(-4096);
+    yaw(-4096);
+    //spring(4096);
     pitchHome.start();
     yawHome.start();
-    springHome.start();
+    //springHome.start();
 }
 
 //void printPos(int idx, int v, int up ){
@@ -109,11 +109,16 @@ void encoders(){
     pitchPos = EncPitch.read();
     Serial.print(F("Pitch Encoder: "));
     Serial.println(EncPitch.read());
+    Serial.print(F("Pitch Output: "));
+    Serial.println(pitchOut);
+    
   }
   if (yawPos != EncYaw.read()){
     yawPos = EncYaw.read();
     Serial.print(F("Yaw Encoder: "));
     Serial.println(EncYaw.read());
+    Serial.print(F("Yaw Output: "));
+    Serial.println(yawOut);
   }
   
 }

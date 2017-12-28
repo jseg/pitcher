@@ -41,10 +41,10 @@ Encoder EncYaw(YAW_A, YAW_B); ////instantiate pitch encoder, uses INT4 and INT5
 //PID Loops 
 bool pitchEn, yawEn;            //Enable booleans for PID loops
 double pitchSet, pitchIn, pitchOut, yawSet, yawIn, yawOut;  //PID loop inputs and outputs
-double pitchKp = 10, pitchKi= 0, pitchKd=5;  //Initial pitch PID parameters
-double yawKp = 10, yawKi= 0, yawKd=5;  //Initial pitch PID parameters
-PID pitchPID(&pitchIn, &pitchOut, &pitchSet,pitchKp,pitchKi,pitchKd, DIRECT);
-PID yawPID(&yawIn, &yawOut, &yawSet,yawKp,yawKi,yawKd, DIRECT);
+double pitchKp = 100, pitchKi= 0, pitchKd=25;  //Initial pitch PID parameters
+double yawKp = 100, yawKi= 0, yawKd=25;  //Initial pitch PID parameters
+PID pitchPID(&pitchIn, &pitchOut, &pitchSet,pitchKp,pitchKi,pitchKd, REVERSE);
+PID yawPID(&yawIn, &yawOut, &yawSet,yawKp,yawKi,yawKd, REVERSE);
 
 //State Machines
 
@@ -114,7 +114,7 @@ void setup() {
            .onChange(HIGH,ballLift,ballLift.EVT_ON);   //turn off the lift motor
 
   //Home Motors Sequence Set-up
-  yawHome.begin(4096)                                   //initialize timer at 3 secs
+  yawHome.begin(3000)                                   //initialize timer at 3 secs
          .onTimer( [] ( int idx, int v, int up ) {      //lambda function to turn off motor and reset PID
       yaw(0);                                           //turn motor off
       EncYaw.write(0);                                  //set the encoder to zero
@@ -122,7 +122,7 @@ void setup() {
       yawIn = EncYaw.read();                            //Sync control loop sample with new home
       yawPID.SetMode(AUTOMATIC);                        //Turn PID back on
     });
-  pitchHome.begin(4096)                                 //initialize timer at 3 secs
+  pitchHome.begin(3000)                                 //initialize timer at 3 secs
          .onTimer( [] ( int idx, int v, int up ) {      //lambda function to turn off motor and reset PID
       pitch(0);                                         //turn the motore off
       EncPitch.write(0);                                //set the encoder to zero
@@ -130,7 +130,7 @@ void setup() {
       pitchIn = EncPitch.read();                        //Sync control loop sample with new home
       pitchPID.SetMode(AUTOMATIC);                      //Turn PID back on
     });
-  springHome.begin(4096)                                   //initialize timer at 3 secs
+  springHome.begin(3000)                                   //initialize timer at 3 secs
          .onTimer( [] ( int idx, int v, int up ) {      //lambda function that turns off motor
       spring(0);
     }); 
