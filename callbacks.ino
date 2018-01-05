@@ -114,15 +114,15 @@ void runHome(){
 //}
 
 void encoders(){
+  pitchIn = EncPitch.read();
   if (pitchPos != EncPitch.read()){
     pitchPos = EncPitch.read();
-    pitchIn = EncPitch.read();
     Serial.print(F("Pitch Encoder: "));
     Serial.println(EncPitch.read());  
   }
+  yawIn = EncYaw.read();
   if (yawPos != EncYaw.read()){
     yawPos = EncYaw.read();
-    yawIn = EncYaw.read();
     Serial.print(F("Yaw Encoder: "));
     Serial.println(EncYaw.read());
     Serial.print(F("Yaw Output: "));
@@ -144,14 +144,14 @@ void pid(){
 }
 
 void feedback(){
- static int elapsed = millis() + 300;
+ static int elapsed = millis() + 1000;
  if (pitchPID.GetMode()){
  if (millis() - elapsed > 0){ 
  Serial.print(F("Pitch Output: "));
  Serial.println(pitchOut);
  Serial.print(F("Yaw Output: "));
  Serial.println(yawOut);
- elapsed = millis() + 300;
+ elapsed = millis() + 1000;
  }}
 }
 
