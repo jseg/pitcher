@@ -41,8 +41,8 @@ Encoder EncYaw(YAW_A, YAW_B); ////instantiate pitch encoder, uses INT4 and INT5
 //PID Loops 
 bool pitchEn, yawEn;            //Enable booleans for PID loops
 double pitchSet = 0, pitchIn = 0, pitchOut = 0, yawSet = 0, yawIn = 0, yawOut = 0;  //PID loop inputs and outputs
-double pitchKp = 2, pitchKi= 5, pitchKd=1;  //Initial pitch PID parameters
-double yawKp = 2, yawKi= 5, yawKd=1;  //Initial pitch PID parameters
+double pitchKp = 10, pitchKi= 50, pitchKd=5;  //Initial pitch PID parameters
+double yawKp = 10, yawKi= 50, yawKd=5;  //Initial pitch PID parameters
 PID pitchPID(&pitchIn, &pitchOut, &pitchSet,pitchKp,pitchKi,pitchKd,P_ON_M, DIRECT);
 PID yawPID(&yawIn, &yawOut, &yawSet,yawKp,yawKi,yawKd,P_ON_M, DIRECT);
 
