@@ -40,11 +40,11 @@ Encoder EncYaw(YAW_A, YAW_B); ////instantiate pitch encoder, uses INT4 and INT5
 
 //PID Loops 
 bool pitchEn, yawEn;            //Enable booleans for PID loops
-double pitchSet, pitchIn, pitchOut, yawSet, yawIn, yawOut;  //PID loop inputs and outputs
-double pitchKp = 100, pitchKi= 0, pitchKd=25;  //Initial pitch PID parameters
-double yawKp = 100, yawKi= 0, yawKd=25;  //Initial pitch PID parameters
-PID pitchPID(&pitchIn, &pitchOut, &pitchSet,pitchKp,pitchKi,pitchKd, REVERSE);
-PID yawPID(&yawIn, &yawOut, &yawSet,yawKp,yawKi,yawKd, REVERSE);
+double pitchSet = 0, pitchIn = 0, pitchOut = 0, yawSet = 0, yawIn = 0, yawOut = 0;  //PID loop inputs and outputs
+double pitchKp = 2, pitchKi= 5, pitchKd=1;  //Initial pitch PID parameters
+double yawKp = 2, yawKi= 5, yawKd=1;  //Initial pitch PID parameters
+PID pitchPID(&pitchIn, &pitchOut, &pitchSet,pitchKp,pitchKi,pitchKd,P_ON_M, DIRECT);
+PID yawPID(&yawIn, &yawOut, &yawSet,yawKp,yawKi,yawKd,P_ON_M, DIRECT);
 
 //State Machines
 
@@ -147,10 +147,10 @@ void setup() {
   initializeOutputs();
 
 pitchPID.SetOutputLimits(-4096,4096);
-pitchPID.SetSampleTime(100);  
+pitchPID.SetSampleTime(50);  
 
 yawPID.SetOutputLimits(-4096,4096);
-yawPID.SetSampleTime(100);  
+yawPID.SetSampleTime(50);  
 }
 
 /////////////////////////////////
@@ -162,4 +162,5 @@ void loop() {
   encoders();                                           //passes volatile encoder states to globals for use in control loop
   automaton.run();                                      //run the state machines
   pid();
+  feedback();
 }

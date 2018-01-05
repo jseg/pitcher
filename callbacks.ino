@@ -45,6 +45,15 @@ void ballReadyCB(int idx, int v, int up){                //called when ballReady
 }
 
 void runPreset(int num){
+  if(!pitchPID.GetMode()){
+    pitchPID.SetMode(AUTOMATIC);
+  }
+  if(!yawPID.GetMode()){
+    yawPID.SetMode(AUTOMATIC);
+  }
+  pitchSet = presets[num][0];
+  yawSet = presets[num][1];
+  //springSet = presets[num][2];
   return;
 }
 
@@ -108,10 +117,7 @@ void encoders(){
   if (pitchPos != EncPitch.read()){
     pitchPos = EncPitch.read();
     Serial.print(F("Pitch Encoder: "));
-    Serial.println(EncPitch.read());
-    Serial.print(F("Pitch Output: "));
-    Serial.println(pitchOut);
-    
+    Serial.println(EncPitch.read());  
   }
   if (yawPos != EncYaw.read()){
     yawPos = EncYaw.read();
@@ -133,5 +139,16 @@ void pid(){
     yaw((int)yawOut);
   }
   
+}
+
+void feedback(){
+ static int elapsed = millis() + 300;
+ if (millis() - elapsed > 0){ 
+ Serial.print(F("Pitch Output: "));
+ Serial.println(pitchOut);
+ Serial.print(F("Yaw Output: "));
+ Serial.println(yawOut);
+ elapsed = millis() + 300;
+ }
 }
 

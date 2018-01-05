@@ -7,10 +7,6 @@ void keypadEvent(KeypadEvent key){
         case '3':
         case '4':
         case '5':
-          pitchSet = 37;
-          yawSet = 37;
-          pitchPID.SetMode(AUTOMATIC);
-          yawPID.SetMode(AUTOMATIC);
         case '6':
         case '7':
         case '8':
@@ -33,6 +29,10 @@ void keypadEvent(KeypadEvent key){
           break;
         case '#':       
         case '*':
+          pitchPID.SetMode(MANUAL);
+          yawPID.SetMode(MANUAL);
+          pitch(0);
+          yaw(0);
           //callback
           break;
         break;
