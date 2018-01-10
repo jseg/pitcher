@@ -29,10 +29,12 @@ void keypadEvent(KeypadEvent key){
           break;
         case '#':       
         case '*':
-          pitchPID.SetMode(MANUAL);
-          yawPID.SetMode(MANUAL);
+          pitchEn = false;
+          yawEn = false;
+          springEn = false;
           pitch(0);
           yaw(0);
+          spring(0);
           //callback
           break;
         break;
@@ -113,34 +115,18 @@ void cmd_callback( int idx, int v, int up ) {
       return;
     case CMD_PID:
       if (pin == 1){
-        pitchPID.SetMode(AUTOMATIC);
-        yawPID.SetMode(AUTOMATIC);
-        Serial.println(F("PID Loops On"));
+        pitchEn = true;         //turn on motor control
+        yawEn = true;           //
+        springEn = true;
+        Serial.println(F("Motor Control Off"));
       }
       else{
-        pitchPID.SetMode(MANUAL);
-        yawPID.SetMode(MANUAL);
-        Serial.println(F("PID Loops Off"));
+        pitchEn = false;         //turn on motor control
+        yawEn = false;           //
+        springEn = false;
+        Serial.println(F("Motor Control Off"));
       }
      return;
-    case CMD_YAWSET:
-      yawPID.SetTunings(pin,atoi(cmd.arg(2)),atoi(cmd.arg(3)));
-      Serial.print(F("Yaw kp: "));
-      Serial.print(pin);
-      Serial.print(F(", ki: "));
-      Serial.print(atoi(cmd.arg(2)));
-      Serial.print(F(", kd: "));
-      Serial.println(atoi(cmd.arg(3)));
-      return;
-    case CMD_PITCHSET:
-      pitchPID.SetTunings(pin,atoi(cmd.arg(2)),atoi(cmd.arg(3)));
-      Serial.print(F("Pitch kp: "));
-      Serial.print(pin);
-      Serial.print(F(", ki: "));
-      Serial.print(atoi(cmd.arg(2)));
-      Serial.print(F(", kd: "));
-      Serial.println(atoi(cmd.arg(3)));
-      return;
     case CMD_MOVE:
       pitchSet = pin;
       yawSet = atoi(cmd.arg(2));
