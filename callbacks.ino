@@ -106,7 +106,7 @@ void runHome(){
     springEn = false;    
     pitch(-4096);
     yaw(-4096);
-    spring(4096);
+    spring(-4096);
     pitchHome.start();
     yawHome.start();
     springHome.start();
@@ -156,7 +156,7 @@ int scale(int setPt, int EncPos, int minSpeed){
     else return 0;
 }
 
-void motors(){
+bool motors(){
   if (pitchEn){
     pitch(scale(pitchSet, EncPitch.read(), 1750));
   }
@@ -166,10 +166,25 @@ void motors(){
   if (springEn){
     spring(scale(springSet, springPos, 3000));
   }
+  if((abs(pitchSet-EncPitch.read())<=1)&&(abs(yawSet-EncYaw.read())<=1)&&(abs(springSet-springPos)<=1)){
+    return 1;
+  }
+  else{
+    return 0;
+  }
 }
 
 void feedback(){
- 
+ static bool moving = 0;
+ if (moving != atSetPoint){
+    moving = atSetPoint;
+    if(atSetPoint){
+      Serial.print(F("Moving now...")); 
+    }
+    else{
+      Serial.print(F("Arrived"));
+    }
+ }
 }
 
 void encoderSpring(){

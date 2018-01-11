@@ -45,6 +45,7 @@ Encoder EncYaw(YAW_A, YAW_B); ////instantiate pitch encoder, uses INT4 and INT5
 bool pitchEn, yawEn, springEn;            //Enable booleans for PID loops
 int pitchSet = 0, yawSet = 0, springSet = 0;  //Motor Setpoints
 int pitchSpeed = 0, yawSpeed = 0, springSpeed = 0;
+bool atSetPoint;
 
 
 //State Machines
@@ -160,5 +161,5 @@ void loop() {
   encoders();                                           //passes volatile encoder states to globals for use in control loop
   automaton.run();                                      //run the state machines
   feedback();
-  motors();
+  atSetPoint = motors();
 }
