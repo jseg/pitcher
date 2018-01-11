@@ -164,7 +164,7 @@ bool motors(){
     yaw(scale(yawSet, EncYaw.read(), 1250));
   }
   if (springEn){
-    spring(scale(springSet, springPos, 3000));
+    spring(scale(springSet, springPos, 1450));
   }
   if((abs(pitchSet-EncPitch.read())<=1)&&(abs(yawSet-EncYaw.read())<=1)&&(abs(springSet-springPos)<=1)){
     return 1;
