@@ -130,6 +130,11 @@ void encoders(){
     Serial.print(F("Yaw Encoder: "));
     Serial.println(EncYaw.read());
   }
+  if (springPos != lastSpringPos){
+     lastSpringPos = springPos;
+    Serial.print(F("Spring Encoder: "));
+    Serial.println(springPos);
+  }
   
 }
 
@@ -143,7 +148,7 @@ int scale(int setPt, int EncPos, int minSpeed){
       return map(error,1,80,minSpeed,4096);
     }
     if (error < -20){
-      return(4096);
+      return(-4096);
     }
     if ((error >= -20) && (error < -0)){
       return map(error,-80,-1,-4096,(-1 * minSpeed));

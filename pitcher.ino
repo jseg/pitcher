@@ -36,6 +36,7 @@ Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );//insta
 volatile int springPos;     //value of spring encoder
 int pitchPos;
 int yawPos;
+int lastSpringPos;
 bool springDir = true;             //true for up, false for down
 Encoder EncPitch(PITCH_A, PITCH_B); //instantiate pitch encoder, uses INT0 and INT1
 Encoder EncYaw(YAW_A, YAW_B); ////instantiate pitch encoder, uses INT4 and INT5
