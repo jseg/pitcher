@@ -33,18 +33,20 @@ Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );//insta
 
 //Encoders
 //Documentation: https://www.pjrc.com/teensy/td_libs_Encoder.html
-int yawPos = 0; //value of yaw encoder
-int pitchPos = 0; //value of pitch encoder
+volatile int springPos;     //value of spring encoder
+int pitchPos;
+int yawPos;
+int lastSpringPos;
+bool springDir = true;             //true for up, false for down
 Encoder EncPitch(PITCH_A, PITCH_B); //instantiate pitch encoder, uses INT0 and INT1
 Encoder EncYaw(YAW_A, YAW_B); ////instantiate pitch encoder, uses INT4 and INT5
 
-//PID Loops 
-bool pitchEn, yawEn;            //Enable booleans for PID loops
-double pitchSet = 0, pitchIn = 0, pitchOut = 0, yawSet = 0, yawIn = 0, yawOut = 0;  //PID loop inputs and outputs
-double pitchKp = 10, pitchKi= 50, pitchKd=5;  //Initial pitch PID parameters
-double yawKp = 10, yawKi= 50, yawKd=5;  //Initial pitch PID parameters
-PID pitchPID(&pitchIn, &pitchOut, &pitchSet,pitchKp,pitchKi,pitchKd,P_ON_M, DIRECT);
-PID yawPID(&yawIn, &yawOut, &yawSet,yawKp,yawKi,yawKd,P_ON_M, DIRECT);
+//Motor Control Values 
+bool pitchEn, yawEn, springEn;            //Enable booleans for PID loops
+int pitchSet = 0, yawSet = 0, springSet = 0;  //Motor Setpoints
+int pitchSpeed = 0, yawSpeed = 0, springSpeed = 0;
+bool atSetPoint;
+
 
 //State Machines
 
@@ -53,9 +55,9 @@ PID yawPID(&yawIn, &yawOut, &yawSet,yawKp,yawKi,yawKd,P_ON_M, DIRECT);
 Atm_command cmd;  //This object is the primary way to control the machine during development     
 char cmd_buffer[80];   // input buffer
 enum { CMD_HIGH, CMD_LOW, CMD_READ, CMD_AREAD, CMD_AWRITE, //enum for switchcase in callback
-       CMD_MODE_INPUT, CMD_MODE_OUTPUT, CMD_MODE_PULLUP, CMD_LOAD, CMD_NUMKEY, CMD_EEPROMSETUP, CMD_PITCH, CMD_YAW, CMD_SPRING, CMD_HOME, CMD_PID, CMD_YAWSET, CMD_PITCHSET, CMD_MOVE };
+       CMD_MODE_INPUT, CMD_MODE_OUTPUT, CMD_MODE_PULLUP, CMD_LOAD, CMD_NUMKEY, CMD_EEPROMSETUP, CMD_PITCH, CMD_YAW, CMD_SPRING, CMD_HOME, CMD_PID, CMD_MOVE };
 const char cmdlist[] = //must be in the same order as enum
-      "high low read aread awrite mode_input mode_output mode_pullup load numkey eepromsetup pitch yaw spring home pid yawset pitchset move"; 
+      "high low read aread awrite mode_input mode_output mode_pullup load numkey eepromsetup pitch yaw spring home pid move"; 
       
 //Objects related to the Ball Load Sequence
 //"LED" state machine reference: https://github.com/tinkerspy/Automaton/wiki/The-led-machine
@@ -119,20 +121,23 @@ void setup() {
       yaw(0);                                           //turn motor off
       EncYaw.write(0);                                  //set the encoder to zero
       yawSet = EncYaw.read();                           //Yaw setpoint equals encoder value (0)
-      yawIn = EncYaw.read();                            //Sync control loop sample with new home
-      yawPID.SetMode(AUTOMATIC);                        //Turn PID back on
+      yawPos = EncYaw.read();                            //Sync control loop sample with new home
+      yawEn = true;                                     //Turn motor control back on
     });
   pitchHome.begin(3000)                                 //initialize timer at 3 secs
          .onTimer( [] ( int idx, int v, int up ) {      //lambda function to turn off motor and reset PID
       pitch(0);                                         //turn the motore off
       EncPitch.write(0);                                //set the encoder to zero
       pitchSet = EncPitch.read();                       //Pitch setpoint equals encoder value (0)
-      pitchIn = EncPitch.read();                        //Sync control loop sample with new home
-      pitchPID.SetMode(AUTOMATIC);                      //Turn PID back on
+      pitchPos = EncPitch.read();                        //Sync control loop sample with new home
+      pitchEn = true;                                   //Turn motor controll back  on
     });
   springHome.begin(3000)                                   //initialize timer at 3 secs
          .onTimer( [] ( int idx, int v, int up ) {      //lambda function that turns off motor
       spring(0);
+      springPos = 0;
+      springSet = 0;
+      springEn = true;
     }); 
 
 //  printEncoders.begin(1000)
@@ -144,13 +149,7 @@ void setup() {
   
   //Pin Initialization
   initializeInputs();
-  initializeOutputs();
-
-pitchPID.SetOutputLimits(-4096,4096);
-pitchPID.SetSampleTime(50);  
-
-yawPID.SetOutputLimits(-4096,4096);
-yawPID.SetSampleTime(50);  
+  initializeOutputs();  
 }
 
 /////////////////////////////////
@@ -161,6 +160,6 @@ void loop() {
   char key = keypad.getKey();                           //poll the keypad for pressed keys
   encoders();                                           //passes volatile encoder states to globals for use in control loop
   automaton.run();                                      //run the state machines
-  pid();
   feedback();
+  atSetPoint = motors();
 }

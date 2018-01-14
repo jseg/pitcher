@@ -2,6 +2,7 @@
 void initializeInputs(){
  pinMode(BALL_IN,INPUT);
  pinMode(LOADED,INPUT);
+ attachInterrupt(digitalPinToInterrupt(SPRING_COUNTER), encoderSpring,CHANGE);
 }
 
 void initializeOutputs(){  //set pin modes and intial states

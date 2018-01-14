@@ -29,10 +29,12 @@ void keypadEvent(KeypadEvent key){
           break;
         case '#':       
         case '*':
-          pitchPID.SetMode(MANUAL);
-          yawPID.SetMode(MANUAL);
+          pitchEn = false;
+          yawEn = false;
+          springEn = false;
           pitch(0);
           yaw(0);
+          spring(0);
           //callback
           break;
         break;
@@ -113,58 +115,49 @@ void cmd_callback( int idx, int v, int up ) {
       return;
     case CMD_PID:
       if (pin == 1){
-        pitchPID.SetMode(AUTOMATIC);
-        yawPID.SetMode(AUTOMATIC);
-        Serial.println(F("PID Loops On"));
+        pitchEn = true;         //turn on motor control
+        yawEn = true;           //
+        springEn = true;
+        Serial.println(F("Motor Control On"));
       }
       else{
-        pitchPID.SetMode(MANUAL);
-        yawPID.SetMode(MANUAL);
-        Serial.println(F("PID Loops Off"));
+        pitchEn = false;         //turn on motor control
+        yawEn = false;           //
+        springEn = false;
+        Serial.println(F("Motor Control Off"));
       }
      return;
-    case CMD_YAWSET:
-      yawPID.SetTunings(pin,atoi(cmd.arg(2)),atoi(cmd.arg(3)));
-      Serial.print(F("Yaw kp: "));
-      Serial.print(pin);
-      Serial.print(F(", ki: "));
-      Serial.print(atoi(cmd.arg(2)));
-      Serial.print(F(", kd: "));
-      Serial.println(atoi(cmd.arg(3)));
-      return;
-    case CMD_PITCHSET:
-      pitchPID.SetTunings(pin,atoi(cmd.arg(2)),atoi(cmd.arg(3)));
-      Serial.print(F("Pitch kp: "));
-      Serial.print(pin);
-      Serial.print(F(", ki: "));
-      Serial.print(atoi(cmd.arg(2)));
-      Serial.print(F(", kd: "));
-      Serial.println(atoi(cmd.arg(3)));
-      return;
     case CMD_MOVE:
       pitchSet = pin;
       yawSet = atoi(cmd.arg(2));
+      springSet = atoi(cmd.arg(3));
       Serial.print(F("Pitch Setpoint: "));
       Serial.println(pin);
       Serial.print(F("Yaw Setpoint: "));
       Serial.println(atoi(cmd.arg(2)));
+      Serial.print(F("Sprint Setpoint: "));
+      Serial.println(atoi(cmd.arg(3)));
       return;
   }
 }
 
 void help(){
   Serial.println(F("Recognized commands:"));
-  Serial.println(F("high pin        *set a pin to HIGH"));
-  Serial.println(F("low pin         *set a pin to LOW"));
-  Serial.println(F("read pin        *read the current state of a pin"));
-  Serial.println(F("aread pin       *read an analog pin"));
-  Serial.println(F("awrite pin      *write an analog value to a pin"));
-  Serial.println(F("mode_input pin  *set a pin to input mode"));
-  Serial.println(F("mode_output pin *set a pin to output mode"));
-  Serial.println(F("mode_pullup pin *turn on an internal pullup"));
-  Serial.println(F("load            *load a ball in the launcher"));
-  Serial.println(F("num_key num     *simulate a number key"));
-  Serial.println(F("eepromSetup     *setup a new eeprom"));
-  Serial.println(F("eepromSetup     *setup a new eeprom"));
+  Serial.println(F("high pin         *set a pin to HIGH"));
+  Serial.println(F("low pin          *set a pin to LOW"));
+  Serial.println(F("read pin         *read the current state of a pin"));
+  Serial.println(F("aread pin        *read an analog pin"));
+  Serial.println(F("awrite pin       *write an analog value to a pin"));
+  Serial.println(F("mode_input pin   *set a pin to input mode"));
+  Serial.println(F("mode_output pin  *set a pin to output mode"));
+  Serial.println(F("mode_pullup pin  *turn on an internal pullup"));
+  Serial.println(F("load             *load a ball in the launcher"));
+  Serial.println(F("num_key num      *simulate a number key"));
+  Serial.println(F("pitch num        *run pitch motor at speed num"));
+  Serial.println(F("yaw num          *run yaw motor at speed num"));
+  Serial.println(F("spring num       *run spring motor at speed num"));
+  Serial.println(F("home             *run run all motors home"));
+  Serial.println(F("pid bool         *enable (1) or disable (0) position control"));
+  Serial.println(F("move num num num *run to position num num num"));
   
 }

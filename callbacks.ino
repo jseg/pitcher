@@ -45,15 +45,18 @@ void ballReadyCB(int idx, int v, int up){                //called when ballReady
 }
 
 void runPreset(int num){
-  if(!pitchPID.GetMode()){
-    pitchPID.SetMode(AUTOMATIC);
+  if(!pitchEn){
+    pitchEn = true;
   }
-  if(!yawPID.GetMode()){
-    yawPID.SetMode(AUTOMATIC);
+  if(!yawEn){
+    yawEn = true;
+  }
+  if(!springEn){
+    springEn = true;
   }
   pitchSet = presets[num][0];
   yawSet = presets[num][1];
-  //springSet = presets[num][2];
+  springSet = presets[num][2];
   return;
 }
 
@@ -86,24 +89,27 @@ void yaw(int duty){
 void spring(int duty){
   if (duty >= 0) {
     digitalWrite(SPRING_D, HIGH);
+    springDir = true;               //set a direction flag to be read by the spring ISR
     Timer5.setPwmDuty(SPRING_PWM,duty);
    }
   else {
     digitalWrite(SPRING_D, LOW);
+    springDir = false;            ////set a direction flag to be read by the spring ISR
     Timer5.setPwmDuty(SPRING_PWM,abs(duty));
   }
 return;
 }
 
 void runHome(){
-    pitchPID.SetMode(MANUAL);  //Turn off the PID loops
-    yawPID.SetMode(MANUAL);    
+    pitchEn = false;  //Turn off the control loops
+    yawEn = false;
+    springEn = false;    
     pitch(-4096);
     yaw(-4096);
-    //spring(4096);
+    spring(-4096);
     pitchHome.start();
     yawHome.start();
-    //springHome.start();
+    springHome.start();
 }
 
 //void printPos(int idx, int v, int up ){
@@ -114,44 +120,83 @@ void runHome(){
 //}
 
 void encoders(){
-  pitchIn = EncPitch.read();
   if (pitchPos != EncPitch.read()){
     pitchPos = EncPitch.read();
     Serial.print(F("Pitch Encoder: "));
     Serial.println(EncPitch.read());  
   }
-  yawIn = EncYaw.read();
   if (yawPos != EncYaw.read()){
     yawPos = EncYaw.read();
     Serial.print(F("Yaw Encoder: "));
     Serial.println(EncYaw.read());
-    Serial.print(F("Yaw Output: "));
-    Serial.println(yawOut);
+  }
+  if (springPos != lastSpringPos){
+     lastSpringPos = springPos;
+    Serial.print(F("Spring Encoder: "));
+    Serial.println(springPos);
   }
   
 }
 
-void pid(){
-  pitchPID.Compute();
-  yawPID.Compute();
-  if (pitchPID.GetMode()){  //if its turned on pass PID output to speed function
-    pitch((int)pitchOut);
-  }
-  if (yawPID.GetMode()){
-    yaw((int)yawOut);
-  }
+int scale(int setPt, int EncPos, int minSpeed){
   
+    int error = setPt - EncPos;
+    if (error > 20){
+      return(4096);
+    }
+    if ((error <= 20) && (error > 1)){
+      return map(error,1,80,minSpeed,4096);
+    }
+    if (error < -20){
+      return(-4096);
+    }
+    if ((error >= -20) && (error < -0)){
+      return map(error,-80,-1,-4096,(-1 * minSpeed));
+    }
+    else return 0;
+}
+
+bool motors(){
+  if (pitchEn){
+    pitch(scale(pitchSet, EncPitch.read(), 1750));
+  }
+  if (yawEn){
+    yaw(scale(yawSet, EncYaw.read(), 1250));
+  }
+  if (springEn){
+    spring(scale(springSet, springPos, 1450));
+  }
+  if((abs(pitchSet-EncPitch.read())<=1)&&(abs(yawSet-EncYaw.read())<=1)&&(abs(springSet-springPos)<=1)){
+    return 1;
+  }
+  else{
+    return 0;
+  }
 }
 
 void feedback(){
- static int elapsed = millis() + 1000;
- if (pitchPID.GetMode()){
- if (millis() - elapsed > 0){ 
- Serial.print(F("Pitch Output: "));
- Serial.println(pitchOut);
- Serial.print(F("Yaw Output: "));
- Serial.println(yawOut);
- elapsed = millis() + 1000;
- }}
+ static bool moving = 0;
+ if (moving != atSetPoint){
+    moving = atSetPoint;
+    if(atSetPoint){
+      Serial.print(F("Moving now...")); 
+    }
+    else{
+      Serial.print(F("Arrived"));
+    }
+ }
 }
+
+void encoderSpring(){
+  byte oldSREG = SREG; //remember if interupts are on or off
+  noInterrupts(); //Turn off interrupts
+  if(springDir) {
+     springPos++;
+  } 
+  else {
+    springPos--; 
+  }
+  SREG = oldSREG; //Turn back on interrupts, if they were off
+  interrupts();
+ }
 
