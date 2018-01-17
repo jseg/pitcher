@@ -1,33 +1,88 @@
 void keypadEvent(KeypadEvent key){
+  if(!edit){
     switch (keypad.getState()){
     case PRESSED:
         switch (key){
         case '1':
+          if (Aiming.state()){
+            runPreset(1);     //function to move set points to a new preset
+            Serial.print(F("Pressed: "));        //feedback
+            Serial.println(1);
+            }
+          break;
         case '2':
+          if (Aiming.state()){
+            runPreset(2);     //function to move set points to a new preset
+            Serial.print(F("Pressed: "));        //feedback
+            Serial.println(1);
+            }
+          break;
         case '3':
+          if (Aiming.state()){
+            runPreset(3);     //function to move set points to a new preset
+            Serial.print(F("Pressed: "));        //feedback
+            Serial.println(1);
+            }
+          break;
         case '4':
+          if (Aiming.state()){
+            runPreset(4);     //function to move set points to a new preset
+            Serial.print(F("Pressed: "));        //feedback
+            Serial.println(1);
+            }
+          break;
         case '5':
+          if (Aiming.state()){
+            runPreset(5);     //function to move set points to a new preset
+            Serial.print(F("Pressed: "));        //feedback
+            Serial.println(1);
+            }
+          break;
         case '6':
+          if (Aiming.state()){
+            runPreset(6);     //function to move set points to a new preset
+            Serial.print(F("Pressed: "));        //feedback
+            Serial.println(1);
+            }
+          break;
         case '7':
+          if (Aiming.state()){
+            runPreset(7);     //function to move set points to a new preset
+            Serial.print(F("Pressed: "));        //feedback
+            Serial.println(1);
+            }
+          break;
         case '8':
+          if (Aiming.state()){
+            runPreset(8);     //function to move set points to a new preset
+            Serial.print(F("Pressed: "));        //feedback
+            Serial.println(1);
+            }
+          break;
         case '9':
-          runPreset(atoi( cmd.arg(key) ));     //function to move set points to a new preset
-           Serial.print(F("Pressed: "));        //feedback
-           Serial.println(key);
-          //callback
+          if (Aiming.state()){
+            runPreset(9);     //function to move set points to a new preset
+            Serial.print(F("Pressed: "));        //feedback
+            Serial.println(1);
+            }
           break;
         case 'a':
-            newBall.trigger(newBall.EVT_ON);
+            //newBall.trigger(newBall.EVT_ON);
             break;
         case 'b':
         case 'c': 
         case 'd':       
         case 'e':
         case 'g':
+          Aiming.trigger(Aiming.EVT_OFF);
+          Main.trigger(Main.EVT_STEP);
+          break;
         case 'h': 
         //callback
           break;
-        case '#':       
+        case '#':
+          edit = true;
+          break;       
         case '*':
           pitchEn = false;
           yawEn = false;
@@ -44,19 +99,75 @@ void keypadEvent(KeypadEvent key){
         break;
 
     case RELEASED:
-//        if (key == '*') {
-//            digitalWrite(ledPin,ledPin_state);    // Restore LED state from before it started blinking.
-//            blink = false;
-//        }
         break;
 
     case HOLD:
-//        if (key == '*') {
-//            blink = true;    // Blink the LED when holding the * key.
-//        }
         break;
     }
+  }
+  else{
+    switch (keypad.getState()){
+    case PRESSED:
+        switch (key){
+        case '1':
+          break;
+        case '2':
+          break;
+        case '3':
+          break;
+        case '4':
+          break;
+        case '5':
+          break;
+        case '6':
+          break;
+        case '7':
+          break;
+        case '8':
+          break;
+        case '9':
+          break;
+        case 'a':
+            //newBall.trigger(newBall.EVT_ON);
+            break;
+        case 'b':
+        case 'c': 
+        case 'd':       
+        case 'e':
+        case 'g':
+          Aiming.trigger(Aiming.EVT_OFF);
+          Main.trigger(Main.EVT_STEP);
+        case 'h': 
+        //callback
+          break;
+        case '#':  
+           edit = false;
+           break;     
+        case '*':
+          pitchEn = false;
+          yawEn = false;
+          springEn = false;
+          pitch(0);
+          yaw(0);
+          spring(0);
+          //callback
+          break;
+        break;
+        
+          
+        }
+        break;
+
+    case RELEASED:
+        break;
+
+    case HOLD:
+        break;
+    }
+  }
 }
+
+
 
 void cmd_callback( int idx, int v, int up ) {
   int pin = atoi( cmd.arg( 1 ) );
