@@ -57,6 +57,7 @@ void runPreset(int num){
   pitchSet = presets[num][0];
   yawSet = presets[num][1];
   springSet = presets[num][2];
+  currentPreset = num;
   return;
 }
 
@@ -198,5 +199,14 @@ void encoderSpring(){
   }
   SREG = oldSREG; //Turn back on interrupts, if they were off
   interrupts();
+ }
+
+ void nudge(int p, int y, int s){
+  pitchSet = pitchSet + p;
+  presets[currentPreset][0] = pitchSet;
+  yawSet = yawSet + y;
+  presets[currentPreset][1] = yawSet;
+  springSet = springSet + s;
+  presets[currentPreset][2] = springSet;
  }
 

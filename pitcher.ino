@@ -26,6 +26,7 @@ char keys[ROWS][COLS] = { //key map
     {'*','0','#','g','h'}
 };
 
+bool edit = false;
 byte rowPins[ROWS] = {31, 32, 33, 34}; //connect to the row pinouts of the keypad
 byte colPins[COLS] = {35, 36, 37, 38, 39}; //connect to the column pinouts of the keypad
 
@@ -45,10 +46,17 @@ Encoder EncYaw(YAW_A, YAW_B); ////instantiate pitch encoder, uses INT4 and INT5
 bool pitchEn, yawEn, springEn;            //Enable booleans for PID loops
 int pitchSet = 0, yawSet = 0, springSet = 0;  //Motor Setpoints
 int pitchSpeed = 0, yawSpeed = 0, springSpeed = 0;
-bool atSetPoint;
-
+bool atSetPoint = false;
+int currentPreset = 5;
 
 //State Machines
+//There are four global machine states "Loading", "Aiming", "Firing", and "Main". "Loading", 
+//"Aiming", and "Firing" are binary and mutually exclusive; if one is true the others are false. 
+//"Main" is a step sequence that defines 
+Atm_step Main;
+Atm_bit Loading;
+Atm_bit Aiming;
+Atm_bit Firing;
 
 //Serial Command Line object 
 //Documentation:https://github.com/tinkerspy/Automaton/wiki/The-command-machine
@@ -59,13 +67,24 @@ enum { CMD_HIGH, CMD_LOW, CMD_READ, CMD_AREAD, CMD_AWRITE, //enum for switchcase
 const char cmdlist[] = //must be in the same order as enum
       "high low read aread awrite mode_input mode_output mode_pullup load numkey eepromsetup pitch yaw spring home pid move"; 
       
-//Objects related to the Ball Load Sequence
+//Objects related to the Ball Loading Sequence
 //"LED" state machine reference: https://github.com/tinkerspy/Automaton/wiki/The-led-machine
 //"Digital state machine reference: https://github.com/tinkerspy/Automaton/wiki/The-digital-machine
+//"Step state machine reference: 
+Atm_step loadSq;
 Atm_led ballLift; //Controlls the ball lift arm motor
 Atm_led newBall; //Controlls the "Latch" signal to call for a new ball from the hopper
 Atm_digital ballReady; //Microswitch to signal that a ball is ready to load
 Atm_digital loadSense; //Mircoswitch under the loading arm depressed and high at idle
+Atm_timer springLoad;
+
+//Objects related to Firing Sequence
+Atm_step fireSq;
+Atm_timer moving;
+Atm_led fireSol;
+Atm_led doorSol;
+Atm_led sound;
+
 
 //Objects related to the Home Sequence
 //"Timer" state machine reference: https://github.com/tinkerspy/Automaton/wiki/The-timer-machine
@@ -86,7 +105,10 @@ Atm_timer springHome;
 //Setup
 /////////////////////////////////
 void setup() {
-
+//Pin Initialization
+  initializeInputs();
+  initializeOutputs();
+  
   //Motor Setup
   Timer5.initialize(4096);                            //start timer five at ~4khz
   Timer5.pwm(PITCH_PWM,0);
@@ -102,18 +124,78 @@ void setup() {
   cmd.begin( Serial, cmd_buffer, sizeof( cmd_buffer ) ) //start the serial ui
       .list( cmdlist)                                   //assign command list from above
       .onCommand( cmd_callback );                       //assign callback, located in UI.ino
+
+  //Main Sequence Set-up
+  Main.begin();
+  Main.onStep( 0, Loading, Loading.EVT_ON );  //Loading
+  Main.onStep( 1, Aiming, Aiming.EVT_ON );  //Aiming
+  Main.onStep( 2, Firing, Firing.EVT_ON );  //Firing
+
   
   //Ball Load Sequence Set-up
+  loadSq.begin();
+  loadSq.onStep(0 , [] (int idx, int v, int up){    //First step of the loadSq is to grab the carriage
+    runHome();
+    });
+  loadSq.onStep(1, [] ( int idx, int v, int up ) {    //Run the carriage down to get a ball
+    springLoad.trigger(springLoad.EVT_START);
+    springEn = false;
+    spring(4096);
+  });  
+  loadSq.onStep(2, newBall, newBall.EVT_ON);           //Call for a new ball
+  loadSq.onStep(3, [] ( int idx, int v, int up ) {     //Return to previous preset
+    //runPreset(currentPreset);
+    Loading.trigger(Loading.EVT_OFF);                  //Finish Loading Sequence
+    Main.trigger(Main.EVT_STEP);                       //Transistion to Aiming
+  });
+
+  fireSq.begin();
+    fireSq.onStep(0 , [] (int idx, int v, int up){    //First step is a placeholder
+    return;
+    });
+    fireSq.onStep(1 , moving, moving.EVT_START);    //First step is a placeholder
+    fireSq.onStep(2, [](int idx, int v, int up){
+      doorSol.trigger(doorSol.EVT_BLINK);
+      fireSol.trigger(fireSol.EVT_BLINK);
+      Firing.trigger(Firing.EVT_OFF);
+      fireSq.trigger(fireSq.EVT_STEP);
+      Main.trigger(Main.EVT_STEP);
+      });
+
+    doorSol.begin(SAFETY_DOOR,true).blink(2000,250,1);
+    fireSol.begin(FIRE_SOL).blink(2000,250,1);
+
+    moving.begin(200)                       //initialize timer at 200 milli secs
+         .repeat(-1)
+         .onTimer( [] ( int idx, int v, int up ) {      //lambda function that turns off motor
+      if(atSetPoint){
+      pitchEn = false;
+      yawEn = false;
+      springEn = false;
+      fireSq.trigger(fireSq.EVT_STEP);
+      moving.trigger(moving.EVT_STOP);  
+      }
+      });
+   
+  springLoad.begin(3000)                                   //initialize timer at 3 secs
+         .onTimer( [] ( int idx, int v, int up ) {      //lambda function that turns off motor
+      spring(0);
+      springPos = 300;
+      springSet = 300;
+      springEn = true;
+      loadSq.trigger(loadSq.EVT_STEP);
+    });
+  
   newBall.begin(LATCH);                                 //Starts in IDLE state, BALL_IN: LOW
-    ballReady.trace(Serial);
-  loadSense.trace(Serial);
-  newBall.begin(LATCH);                                 //Starts in IDLE state, BALL_IN: LOW
-  ballReady.begin(BALL_IN,20)                            //when ballReady is HIGH for 20ms:
+  ballReady.begin(BALL_IN,20)                           //when ballReady is HIGH for 20ms:
            .onChange(HIGH,ballReadyCB);                 // run callback that turns off newBall and turns on lift motor
                                                         //make lambda function: https://github.com/tinkerspy/Automaton/wiki/Introduction
   ballLift.begin(BALL_LOAD);                            //Starts in IDLE state, BALL_LOAD: LOW
-  loadSense.begin(LOADED,20)                            //when loadSense is HIGH for 20ms:
-           .onChange(HIGH,ballLift,ballLift.EVT_ON);   //turn off the lift motor
+  loadSense.begin(LOADED,200)                            //when loadSense is HIGH for 20ms:
+           .onChange(HIGH,[] ( int idx, int v, int up ) {//turn off the lift motor and advance the LoadSq
+            ballLift.trigger(ballLift.EVT_ON);
+            loadSq.trigger(loadSq.EVT_STEP);
+            });    
 
   //Home Motors Sequence Set-up
   yawHome.begin(3000)                                   //initialize timer at 3 secs
@@ -132,24 +214,23 @@ void setup() {
       pitchPos = EncPitch.read();                        //Sync control loop sample with new home
       pitchEn = true;                                   //Turn motor controll back  on
     });
-  springHome.begin(3000)                                   //initialize timer at 3 secs
+  springHome.begin(3005)                                   //initialize timer at 3 secs
          .onTimer( [] ( int idx, int v, int up ) {      //lambda function that turns off motor
       spring(0);
       springPos = 0;
       springSet = 0;
       springEn = true;
+      loadSq.trigger(loadSq.EVT_STEP);
     }); 
 
 //  printEncoders.begin(1000)
 //          .onTimer(printPos)
 //          .repeat(-1)
 //          .start();
-  loadEEPromPresets();                                  //load presets from memory
+//  loadEEPromPresets();                                  //load presets from memory
   
   
-  //Pin Initialization
-  initializeInputs();
-  initializeOutputs();  
+    
 }
 
 /////////////////////////////////
