@@ -181,7 +181,7 @@ void feedback(){
  static bool moving = 0;
  if (moving != atSetPoint){
     moving = atSetPoint;
-    if(atSetPoint){
+    if(!atSetPoint){
       Serial.print(F("Moving now...")); 
     }
     else{

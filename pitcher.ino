@@ -155,6 +155,7 @@ void setup() {
 
   fireSq.begin();
     fireSq.onStep(0 , [] (int idx, int v, int up){    //First step is a placeholder
+   Serial.println(F("fireSq state 1"));
     return;
     });
     fireSq.onStep(1 , moving, moving.EVT_START);    //First step is a placeholder
@@ -167,7 +168,12 @@ void setup() {
       });
 
     doorSol.begin(SAFETY_DOOR,true).blink(2000,250,1);
-    fireSol.begin(FIRE_SOL).blink(2000,250,1);
+    fireSol.begin(FIRE_SOL).blink(2005,250,1)
+//           .onFinish([] ( int idx, int v, int up ) {
+//              loadSq.trigger(loadSq.EVT_STEP); 
+//           })
+;
+      
 
     moving.begin(200)                       //initialize timer at 200 milli secs
          .repeat(-1)
@@ -177,7 +183,8 @@ void setup() {
       yawEn = false;
       springEn = false;
       fireSq.trigger(fireSq.EVT_STEP);
-      moving.trigger(moving.EVT_STOP);  
+      moving.trigger(moving.EVT_STOP); 
+      Serial.println(F("Still moving...")); 
       }
       });
    
@@ -235,7 +242,7 @@ void setup() {
 //          .start();
 //  loadEEPromPresets();                                  //load presets from memory
   
-  
+  //fireSq.trigger(fireSq.EVT_STEP);
     
 }
 

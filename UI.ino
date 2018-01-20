@@ -113,6 +113,8 @@ void keypadEvent(KeypadEvent key){
     case PRESSED:
         switch (key){
         case '1':
+            nudge(0,0,10);
+            break;
           break;
         case '2':
           nudge(2,0,0);
@@ -133,16 +135,14 @@ void keypadEvent(KeypadEvent key){
           nudge(-2,0,0);
           break;
         case '9':
+          nudge(0,0,-10);
           break;
         case 'a':
-            nudge(0,0,-10);
-            break;
         case 'b':
         case 'c': 
-            nudge(0,0,-10);
-            break;
         case 'd':       
         case 'e':
+            break;
         case 'g':
           if(Aiming.state()){
             Aiming.trigger(Aiming.EVT_OFF);
