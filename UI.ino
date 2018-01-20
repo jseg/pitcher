@@ -76,6 +76,10 @@ void keypadEvent(KeypadEvent key){
         case 'g':
           Aiming.trigger(Aiming.EVT_OFF);
           Main.trigger(Main.EVT_STEP);
+<<<<<<< HEAD
+=======
+          fireSq.trigger(fireSq.EVT_STEP);
+>>>>>>> dev
           break;
         case 'h': 
         //callback

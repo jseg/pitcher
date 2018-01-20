@@ -12,7 +12,19 @@
 /////////////////////////////////
 //Global Variables
 /////////////////////////////////
-int presets[NUM_PRESETS][NUM_MOTORS];
+int presets[NUM_PRESETS][NUM_MOTORS]=
+   {
+   {0, 0, 0},    //0  Keys arranged like a phone keypad '1' top left
+   {60, 10, 200 },  //1
+   {60, 35, 200 },  //2
+   {60, 35, 200 },  //3
+   {35, 10, 200 },  //4
+   {35, 35, 200 },  //5
+   {35, 60, 200 },  //6
+   {10, 10, 200 },  //7
+   {10, 35, 200 },  //8
+   {10, 70, 200 }   //9
+ };
 int defaultPresets[NUM_PRESETS][NUM_MOTORS] =
 // {Pitch, Yaw, Spring}
 {
@@ -27,3 +39,4 @@ int defaultPresets[NUM_PRESETS][NUM_MOTORS] =
    {0, 35, 200 },  //8
    {0, 70, 200 }   //9
  };
+
