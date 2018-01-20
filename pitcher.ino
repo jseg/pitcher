@@ -135,12 +135,16 @@ void setup() {
   //Ball Load Sequence Set-up
   loadSq.begin();
   loadSq.onStep(0 , [] (int idx, int v, int up){    //First step of the loadSq is to grab the carriage
-    runHome();
+    if (Loading.state()){
+      runHome();
+    }
     });
   loadSq.onStep(1, [] ( int idx, int v, int up ) {    //Run the carriage down to get a ball
-    springLoad.trigger(springLoad.EVT_START);
-    springEn = false;
-    spring(4096);
+    if (Loading.state()){
+      springLoad.trigger(springLoad.EVT_START);
+      springEn = false;
+      spring(4096);
+    }
   });  
   loadSq.onStep(2, newBall, newBall.EVT_ON);           //Call for a new ball
   loadSq.onStep(3, [] ( int idx, int v, int up ) {     //Return to previous preset
@@ -194,7 +198,9 @@ void setup() {
   loadSense.begin(LOADED,200)                            //when loadSense is HIGH for 20ms:
            .onChange(HIGH,[] ( int idx, int v, int up ) {//turn off the lift motor and advance the LoadSq
             ballLift.trigger(ballLift.EVT_ON);
-            loadSq.trigger(loadSq.EVT_STEP);
+            if (Loading.state()){
+              loadSq.trigger(loadSq.EVT_STEP);
+            }
             });    
 
   //Home Motors Sequence Set-up

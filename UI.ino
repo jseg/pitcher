@@ -74,9 +74,11 @@ void keypadEvent(KeypadEvent key){
         case 'd':       
         case 'e':
         case 'g':
-          Aiming.trigger(Aiming.EVT_OFF);
-          Main.trigger(Main.EVT_STEP);
-          fireSq.trigger(fireSq.EVT_STEP);
+          if(Aiming.state()){
+            Aiming.trigger(Aiming.EVT_OFF);
+            Main.trigger(Main.EVT_STEP);
+            fireSq.trigger(fireSq.EVT_STEP);
+          }
           break;
         case 'h': 
         //callback
@@ -113,32 +115,41 @@ void keypadEvent(KeypadEvent key){
         case '1':
           break;
         case '2':
+          nudge(2,0,0);
           break;
         case '3':
           break;
         case '4':
+          nudge(0,-2,0);
           break;
         case '5':
           break;
         case '6':
+          nudge(0,2,0);
           break;
         case '7':
           break;
         case '8':
+          nudge(-2,0,0);
           break;
         case '9':
           break;
         case 'a':
-            //newBall.trigger(newBall.EVT_ON);
+            nudge(0,0,-10);
             break;
         case 'b':
         case 'c': 
+            nudge(0,0,-10);
+            break;
         case 'd':       
         case 'e':
         case 'g':
-          Aiming.trigger(Aiming.EVT_OFF);
-          Main.trigger(Main.EVT_STEP);
-          fireSq.trigger(fireSq.EVT_STEP);
+          if(Aiming.state()){
+            Aiming.trigger(Aiming.EVT_OFF);
+            Main.trigger(Main.EVT_STEP);
+            fireSq.trigger(fireSq.EVT_STEP);
+          }
+          break;
         case 'h': 
         //callback
           break;
