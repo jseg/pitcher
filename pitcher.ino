@@ -140,19 +140,11 @@ void setup() {
   loadSq.onStep(1, [] ( int idx, int v, int up ) {    //Run the carriage down to get a ball
     springLoad.trigger(springLoad.EVT_START);
     springEn = false;
-<<<<<<< HEAD
-    spring(-4096);
-  });  
-  loadSq.onStep(2, newBall, newBall.EVT_ON);           //Call for a new ball
-  loadSq.onStep(3, [] ( int idx, int v, int up ) {     //Return to previous preset
-    runPreset(currentPreset);
-=======
     spring(4096);
   });  
   loadSq.onStep(2, newBall, newBall.EVT_ON);           //Call for a new ball
   loadSq.onStep(3, [] ( int idx, int v, int up ) {     //Return to previous preset
     //runPreset(currentPreset);
->>>>>>> dev
     Loading.trigger(Loading.EVT_OFF);                  //Finish Loading Sequence
     Main.trigger(Main.EVT_STEP);                       //Transistion to Aiming
   });
@@ -180,11 +172,7 @@ void setup() {
       pitchEn = false;
       yawEn = false;
       springEn = false;
-<<<<<<< HEAD
-      loadSq.trigger(loadSq.EVT_STEP);
-=======
       fireSq.trigger(fireSq.EVT_STEP);
->>>>>>> dev
       moving.trigger(moving.EVT_STOP);  
       }
       });
@@ -192,13 +180,8 @@ void setup() {
   springLoad.begin(3000)                                   //initialize timer at 3 secs
          .onTimer( [] ( int idx, int v, int up ) {      //lambda function that turns off motor
       spring(0);
-<<<<<<< HEAD
-      springPos = 0;
-      springSet = 0;
-=======
       springPos = 300;
       springSet = 300;
->>>>>>> dev
       springEn = true;
       loadSq.trigger(loadSq.EVT_STEP);
     });
@@ -208,11 +191,7 @@ void setup() {
            .onChange(HIGH,ballReadyCB);                 // run callback that turns off newBall and turns on lift motor
                                                         //make lambda function: https://github.com/tinkerspy/Automaton/wiki/Introduction
   ballLift.begin(BALL_LOAD);                            //Starts in IDLE state, BALL_LOAD: LOW
-<<<<<<< HEAD
-  loadSense.begin(LOADED,20)                            //when loadSense is HIGH for 20ms:
-=======
   loadSense.begin(LOADED,200)                            //when loadSense is HIGH for 20ms:
->>>>>>> dev
            .onChange(HIGH,[] ( int idx, int v, int up ) {//turn off the lift motor and advance the LoadSq
             ballLift.trigger(ballLift.EVT_ON);
             loadSq.trigger(loadSq.EVT_STEP);
