@@ -16,8 +16,8 @@ void loadEEPromPresets(){
   for(int i = 0; i< NUM_PRESETS; i++)
  {
      for(int j = 0; j < NUM_MOTORS ;j++){
-       int value = EEPROM.read(b);
-       presets[i][j] = value;
+       int val = EEPROM.read(b);
+       presets[i][j] = val;
        b++;
      }
  }
@@ -30,9 +30,9 @@ void savePreset(){
     
        for( int j = 0; j < NUM_MOTORS ;j++){
         
-         int value = presets[i][j];
-         EEPROM.write(b, value);
-         Serial.println(value);
+         int val = presets[i][j];
+         EEPROM.write(b, val);
+         Serial.println(val);
          b++;
        }
    }

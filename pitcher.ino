@@ -131,26 +131,36 @@ void setup() {
   Main.onStep( 1, Aiming, Aiming.EVT_ON );  //Aiming
   Main.onStep( 2, Firing, Firing.EVT_ON );  //Firing
 
+  Loading.begin()
+         .onChange(true, loadSq, loadSq.EVT_STEP); //Step loadSq S0->S1
+  Aiming.begin();
+  Firing.begin()
+        .onChange(true, fireSq, fireSq.EVT_STEP); //Step fireSq S0->S1
   
   //Ball Load Sequence Set-up
   loadSq.begin();
-  loadSq.onStep(0 , [] (int idx, int v, int up){    //First step of the loadSq is to grab the carriage
+  loadSq.onStep(0 , [] (int idx, int v, int up){    //First step is a placeholder
+   Serial.println(F("loadSq state 1"));
+    return;
+  });
+  loadSq.onStep(1 , [] (int idx, int v, int up){    //First step of the loadSq is to grab the carriage
     if (Loading.state()){
       runHome();
     }
     });
-  loadSq.onStep(1, [] ( int idx, int v, int up ) {    //Run the carriage down to get a ball
+  loadSq.onStep(2, [] ( int idx, int v, int up ) {    //Run the carriage down to get a ball
     if (Loading.state()){
       springLoad.trigger(springLoad.EVT_START);
       springEn = false;
       spring(4096);
     }
   });  
-  loadSq.onStep(2, newBall, newBall.EVT_ON);           //Call for a new ball
-  loadSq.onStep(3, [] ( int idx, int v, int up ) {     //Return to previous preset
+  loadSq.onStep(3, newBall, newBall.EVT_ON);           //Call for a new ball
+  loadSq.onStep(4, [] ( int idx, int v, int up ) {     //Return to previous preset
     //runPreset(currentPreset);
     Loading.trigger(Loading.EVT_OFF);                  //Finish Loading Sequence
     Main.trigger(Main.EVT_STEP);                       //Transistion to Aiming
+    loadSq.trigger(loadSq.EVT_STEP);                  //Step loadSq S4->S0
   });
 
   fireSq.begin();
@@ -158,21 +168,17 @@ void setup() {
    Serial.println(F("fireSq state 1"));
     return;
     });
-    fireSq.onStep(1 , moving, moving.EVT_START);    //First step is a placeholder
-    fireSq.onStep(2, [](int idx, int v, int up){
+    fireSq.onStep(1 , moving, moving.EVT_START);    //Step to ensure the rig has stopped moving
+    fireSq.onStep(2, [](int idx, int v, int up){    //Throw the ball!
       doorSol.trigger(doorSol.EVT_BLINK);
       fireSol.trigger(fireSol.EVT_BLINK);
       Firing.trigger(Firing.EVT_OFF);
-      fireSq.trigger(fireSq.EVT_STEP);
+      fireSq.trigger(fireSq.EVT_STEP);              //Step fire sequence S2->S0
       Main.trigger(Main.EVT_STEP);
       });
 
     doorSol.begin(SAFETY_DOOR,true).blink(2000,250,1);
-    fireSol.begin(FIRE_SOL).blink(2005,250,1)
-//           .onFinish([] ( int idx, int v, int up ) {
-//              loadSq.trigger(loadSq.EVT_STEP); 
-//           })
-;
+    fireSol.begin(FIRE_SOL).blink(2005,250,1);
       
 
     moving.begin(200)                       //initialize timer at 200 milli secs
@@ -182,8 +188,8 @@ void setup() {
       pitchEn = false;
       yawEn = false;
       springEn = false;
-      fireSq.trigger(fireSq.EVT_STEP);
-      moving.trigger(moving.EVT_STOP); 
+      fireSq.trigger(fireSq.EVT_STEP);                //Step fire sequence S1->S2
+      moving.trigger(moving.EVT_STOP);
       Serial.println(F("Still moving...")); 
       }
       });
@@ -194,7 +200,7 @@ void setup() {
       springPos = 300;
       springSet = 300;
       springEn = true;
-      loadSq.trigger(loadSq.EVT_STEP);
+      loadSq.trigger(loadSq.EVT_STEP);                //Step loadSq S2->S3
     });
   
   newBall.begin(LATCH);                                 //Starts in IDLE state, BALL_IN: LOW
@@ -206,7 +212,7 @@ void setup() {
            .onChange(HIGH,[] ( int idx, int v, int up ) {//turn off the lift motor and advance the LoadSq
             ballLift.trigger(ballLift.EVT_ON);
             if (Loading.state()){
-              loadSq.trigger(loadSq.EVT_STEP);
+              loadSq.trigger(loadSq.EVT_STEP);         //Step loadSq S3->S4
             }
             });    
 
@@ -233,7 +239,9 @@ void setup() {
       springPos = 286;
       springSet = 0;
       springEn = true;
-      loadSq.trigger(loadSq.EVT_STEP);
+      if(Loading.state()){
+      loadSq.trigger(loadSq.EVT_STEP);                  //Step loadSq S1->S2
+      }
     }); 
 
 //  printEncoders.begin(1000)
@@ -242,7 +250,7 @@ void setup() {
 //          .start();
 //  loadEEPromPresets();                                  //load presets from memory
   
-  //fireSq.trigger(fireSq.EVT_STEP);
+
     
 }
 
