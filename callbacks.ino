@@ -109,7 +109,7 @@ void runHome(){
     springEn = false;    
     pitch(-4096);
     yaw(-4096);
-    spring(4096);
+    spring(-4096);
     pitchHome.start();
     yawHome.start();
     springHome.start();

@@ -119,7 +119,7 @@ void setup() {
   keypad.addEventListener(keypadEvent); // Add an event listener for the keypad. Callback in UI.ino
   
   //Serial UI set-up
-  Serial.begin(9600); 
+  Serial.begin(115200); 
   help();
   cmd.begin( Serial, cmd_buffer, sizeof( cmd_buffer ) ) //start the serial ui
       .list( cmdlist)                                   //assign command list from above
@@ -130,33 +130,32 @@ void setup() {
   Main.onStep( 0, Loading, Loading.EVT_ON );  //Loading
   Main.onStep( 1, Aiming, Aiming.EVT_ON );  //Aiming
   Main.onStep( 2, Firing, Firing.EVT_ON );  //Firing
-
+  Main.trace(Serial);
   Loading.begin()
          .onChange(true, loadSq, loadSq.EVT_STEP); //Step loadSq S0->S1
+  Loading.trigger(Loading.EVT_ON);
   Aiming.begin();
   Firing.begin()
         .onChange(true, fireSq, fireSq.EVT_STEP); //Step fireSq S0->S1
   
   //Ball Load Sequence Set-up
   loadSq.begin();
-  loadSq.onStep(0 , [] (int idx, int v, int up){    //First step is a placeholder
-   Serial.println(F("loadSq state 1"));
-    return;
-  });
-  loadSq.onStep(1 , [] (int idx, int v, int up){    //First step of the loadSq is to grab the carriage
+  loadSq.trace(Serial);
+  loadSq.onStep(0 , [] (int idx, int v, int up){    //First step of the loadSq is to grab the carriage
+    Serial.println(F("loadSq state 1"));
     if (Loading.state()){
       runHome();
     }
     });
-  loadSq.onStep(2, [] ( int idx, int v, int up ) {    //Run the carriage down to get a ball
-    if (Loading.state()){
+  loadSq.onStep(1, [] ( int idx, int v, int up ) {    //Run the carriage down to get a ball
+   // if (Loading.state()){
       springLoad.trigger(springLoad.EVT_START);
       springEn = false;
       spring(4096);
-    }
+    //}
   });  
-  loadSq.onStep(3, newBall, newBall.EVT_ON);           //Call for a new ball
-  loadSq.onStep(4, [] ( int idx, int v, int up ) {     //Return to previous preset
+  loadSq.onStep(2, newBall, newBall.EVT_ON);           //Call for a new ball
+  loadSq.onStep(3, [] ( int idx, int v, int up ) {     //Return to previous preset
     //runPreset(currentPreset);
     Loading.trigger(Loading.EVT_OFF);                  //Finish Loading Sequence
     Main.trigger(Main.EVT_STEP);                       //Transistion to Aiming
@@ -164,17 +163,15 @@ void setup() {
   });
 
   fireSq.begin();
-    fireSq.onStep(0 , [] (int idx, int v, int up){    //First step is a placeholder
-   Serial.println(F("fireSq state 1"));
-    return;
-    });
-    fireSq.onStep(1 , moving, moving.EVT_START);    //Step to ensure the rig has stopped moving
-    fireSq.onStep(2, [](int idx, int v, int up){    //Throw the ball!
+    fireSq.onStep(0 , moving, moving.EVT_START);    //Step to ensure the rig has stopped moving
+    fireSq.onStep(1, [](int idx, int v, int up){    //Throw the ball!
+      Serial.println(F("Fire in the hole!"));
       doorSol.trigger(doorSol.EVT_BLINK);
       fireSol.trigger(fireSol.EVT_BLINK);
       Firing.trigger(Firing.EVT_OFF);
       fireSq.trigger(fireSq.EVT_STEP);              //Step fire sequence S2->S0
       Main.trigger(Main.EVT_STEP);
+      //loadSq.trigger
       });
 
     doorSol.begin(SAFETY_DOOR,true).blink(2000,250,1);
@@ -199,7 +196,7 @@ void setup() {
       spring(0);
       springPos = 300;
       springSet = 300;
-      springEn = true;
+      springEn = false;
       loadSq.trigger(loadSq.EVT_STEP);                //Step loadSq S2->S3
     });
   
@@ -249,8 +246,7 @@ void setup() {
 //          .repeat(-1)
 //          .start();
 //  loadEEPromPresets();                                  //load presets from memory
-  
-
+Main.trigger(Main.EVT_STEP);
     
 }
 
