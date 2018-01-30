@@ -75,13 +75,8 @@ void keypadEvent(KeypadEvent key){
         case 'e':
         case 'g':
           if(Aiming.state()){
-<<<<<<< HEAD
             Aiming.trigger(Aiming.EVT_OFF);  //Finished Aiming
             Main.trigger(Main.EVT_STEP);     //Now Firing
-=======
-            Aiming.trigger(Aiming.EVT_OFF);
-            Main.trigger(Main.EVT_STEP);
->>>>>>> sequence
           }
           break;
         case 'h': 
@@ -146,13 +141,9 @@ void keypadEvent(KeypadEvent key){
         case 'c': 
         case 'd':       
         case 'e':
-<<<<<<< HEAD
             break;
         case 'f': loadDefaultPresets();
             break;
-=======
-        case 'f':loadDefaultPresets();
->>>>>>> sequence
         case 'g':
           if(Aiming.state()){
             Aiming.trigger(Aiming.EVT_OFF);
@@ -160,11 +151,7 @@ void keypadEvent(KeypadEvent key){
           }
           break;
         case 'h': 
-<<<<<<< HEAD
             savePreset();
-=======
-          savePreset();
->>>>>>> sequence
           break;
         case '#':  
            edit = false;
