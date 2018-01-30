@@ -1,3 +1,5 @@
+//#include <Wire.h>
+//#include <LiquidCrystal.h>
 #include <TimerFive.h>
 #include <Key.h>          //installs w/ Keypad.h
 #include <Keypad.h>       //version 3.1.1
@@ -63,9 +65,9 @@ Atm_bit Firing;
 Atm_command cmd;  //This object is the primary way to control the machine during development     
 char cmd_buffer[80];   // input buffer
 enum { CMD_HIGH, CMD_LOW, CMD_READ, CMD_AREAD, CMD_AWRITE, //enum for switchcase in callback
-       CMD_MODE_INPUT, CMD_MODE_OUTPUT, CMD_MODE_PULLUP, CMD_LOAD, CMD_NUMKEY, CMD_EEPROMSETUP, CMD_PITCH, CMD_YAW, CMD_SPRING, CMD_HOME, CMD_PID, CMD_MOVE };
+       CMD_MODE_INPUT, CMD_MODE_OUTPUT, CMD_MODE_PULLUP, CMD_LOAD, CMD_NUMKEY, CMD_EEPROMSETUP, CMD_PITCH, CMD_YAW, CMD_SPRING, CMD_HOME, CMD_PID, CMD_MOVE, CMD_STATE, CMD_SERIAL };
 const char cmdlist[] = //must be in the same order as enum
-      "high low read aread awrite mode_input mode_output mode_pullup load numkey eepromsetup pitch yaw spring home pid move"; 
+      "high low read aread awrite mode_input mode_output mode_pullup load numkey eepromsetup pitch yaw spring home pid move state serial"; 
       
 //Objects related to the Ball Loading Sequence
 //"LED" state machine reference: https://github.com/tinkerspy/Automaton/wiki/The-led-machine
@@ -93,7 +95,7 @@ Atm_timer pitchHome;
 Atm_timer springHome;
 
 //Temporary Timer Object
-//Atm_timer printEncoders;
+Atm_timer printEncoders;
 
 
 
@@ -131,6 +133,11 @@ void setup() {
   Main.onStep( 1, Aiming, Aiming.EVT_ON );  //Aiming
   Main.onStep( 2, Firing, Firing.EVT_ON );  //Firing
 
+  Loading.begin()
+         .onChange(true, loadSq, loadSq.EVT_STEP); //Step loadSq S0->S1
+  Aiming.begin();
+  Firing.begin()
+        .onChange(true, fireSq, fireSq.EVT_STEP); //Step fireSq S0->S1
   
   //Ball Load Sequence Set-up
   loadSq.begin();
@@ -143,7 +150,7 @@ void setup() {
     if (Loading.state()){
       springLoad.trigger(springLoad.EVT_START);
       springEn = false;
-      spring(4096);
+      spring(-4096);
     }
   });  
   loadSq.onStep(2, newBall, newBall.EVT_ON);           //Call for a new ball
@@ -154,20 +161,19 @@ void setup() {
   });
 
   fireSq.begin();
-    fireSq.onStep(0 , [] (int idx, int v, int up){    //First step is a placeholder
-    return;
-    });
-    fireSq.onStep(1 , moving, moving.EVT_START);    //First step is a placeholder
-    fireSq.onStep(2, [](int idx, int v, int up){
+    fireSq.onStep(0 , moving, moving.EVT_START);    //Step to ensure the rig has stopped moving
+    fireSq.onStep(1, [](int idx, int v, int up){    //Throw the ball!
       doorSol.trigger(doorSol.EVT_BLINK);
       fireSol.trigger(fireSol.EVT_BLINK);
-      Firing.trigger(Firing.EVT_OFF);
-      fireSq.trigger(fireSq.EVT_STEP);
-      Main.trigger(Main.EVT_STEP);
       });
 
     doorSol.begin(SAFETY_DOOR,true).blink(2000,250,1);
-    fireSol.begin(FIRE_SOL).blink(2000,250,1);
+    fireSol.begin(FIRE_SOL).blink(2005,250,1)
+           .onFinish([](int idx, int v, int up){
+           Firing.trigger(Firing.EVT_OFF);
+           Main.trigger(Main.EVT_STEP); 
+           });
+      
 
     moving.begin(200)                       //initialize timer at 200 milli secs
          .repeat(-1)
@@ -176,8 +182,9 @@ void setup() {
       pitchEn = false;
       yawEn = false;
       springEn = false;
-      fireSq.trigger(fireSq.EVT_STEP);
-      moving.trigger(moving.EVT_STOP);  
+      fireSq.trigger(fireSq.EVT_STEP);                //Step fire sequence S1->S2
+      moving.trigger(moving.EVT_STOP);
+      Serial.println(F("Still moving...")); 
       }
       });
    
@@ -187,7 +194,7 @@ void setup() {
       springPos = 300;
       springSet = 300;
       springEn = true;
-      loadSq.trigger(loadSq.EVT_STEP);
+      loadSq.trigger(loadSq.EVT_STEP);                //Step loadSq S2->S3
     });
   
   newBall.begin(LATCH);                                 //Starts in IDLE state, BALL_IN: LOW
@@ -197,9 +204,9 @@ void setup() {
   ballLift.begin(BALL_LOAD);                            //Starts in IDLE state, BALL_LOAD: LOW
   loadSense.begin(LOADED,200)                            //when loadSense is HIGH for 20ms:
            .onChange(HIGH,[] ( int idx, int v, int up ) {//turn off the lift motor and advance the LoadSq
-            ballLift.trigger(ballLift.EVT_ON);
-            if (Loading.state()){
-              loadSq.trigger(loadSq.EVT_STEP);
+            if (loadSq.state()==2){
+              ballLift.trigger(ballLift.EVT_ON);
+              loadSq.trigger(loadSq.EVT_STEP);         //Step loadSq S3->S4
             }
             });    
 
@@ -226,16 +233,20 @@ void setup() {
       springPos = 286;
       springSet = 0;
       springEn = true;
-      loadSq.trigger(loadSq.EVT_STEP);
+      if(Loading.state()){
+      loadSq.trigger(loadSq.EVT_STEP);                  //Step loadSq S1->S2
+      }
     }); 
 
-//  printEncoders.begin(1000)
-//          .onTimer(printPos)
-//          .repeat(-1)
-//          .start();
-//  loadEEPromPresets();                                  //load presets from memory
+ printEncoders.begin(250)
+            .onTimer(printPos)
+            .repeat(-1);
+            
   
-  
+loadEEPromPresets();                                  //load presets from memory
+
+automaton.run(); 
+Main.trigger(Main.EVT_STEP);
     
 }
 
