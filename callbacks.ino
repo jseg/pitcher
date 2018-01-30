@@ -39,7 +39,7 @@ void savePreset(){
 }
 
 void ballReadyCB(int idx, int v, int up){                //called when ballReady microswitch goes HIGH
-  if (Loading.state()){
+  if (loadSq.state()==2){
     newBall.trigger(newBall.EVT_OFF);       //turn off newBall signal
     ballLift.trigger(ballLift.EVT_OFF);      //turn on ball lift signal LOW to run motor
     Serial.println(F("Ball Ready"));        //debug feedback
@@ -115,28 +115,53 @@ void runHome(){
     springHome.start();
 }
 
-//void printPos(int idx, int v, int up ){
-//  Serial.print(F("Pitch Encoder: "));
-//  Serial.println(EncPitch.read());
-//  Serial.print(F("Yaw Encoder: "));
-//  Serial.println(EncYaw.read());
-//}
+void printPos(int idx, int v, int up ){
+  Serial.write(27);       // ESC command
+  Serial.print("[2J");    // clear screen command
+  Serial.write(27);
+  Serial.print("[H");     // cursor to home command
+  if(Loading.state()){
+    Serial.print(F("Loading....steps: "));
+    Serial.println(loadSq.state());
+  }
+  else if(Aiming.state()){
+    if(edit){
+      Serial.print(F("Edit Preset:"));
+      Serial.println(currentPreset);
+    }
+    else{
+      Serial.print(F("Aim to Preset:"));
+      Serial.println(currentPreset);
+    }
+  }
+  else if(Firing.state()){
+    Serial.print(F("Firing....steps: "));
+    Serial.println(loadSq.state());
+  }
+  
+  Serial.print(F("Pitch Encoder: "));
+  Serial.println(EncPitch.read());
+  Serial.print(F("Yaw Encoder: "));
+  Serial.println(EncYaw.read());
+  Serial.print(F("Spring Encoder: "));
+  Serial.println(springPos);
+}
 
 void encoders(){
   if (pitchPos != EncPitch.read()){
     pitchPos = EncPitch.read();
-    Serial.print(F("Pitch Encoder: "));
-    Serial.println(EncPitch.read());  
+//    Serial.print(F("Pitch Encoder: "));
+//    Serial.println(EncPitch.read());  
   }
   if (yawPos != EncYaw.read()){
     yawPos = EncYaw.read();
-    Serial.print(F("Yaw Encoder: "));
-    Serial.println(EncYaw.read());
+//    Serial.print(F("Yaw Encoder: "));
+//    Serial.println(EncYaw.read());
   }
   if (springPos != lastSpringPos){
      lastSpringPos = springPos;
-    Serial.print(F("Spring Encoder: "));
-    Serial.println(springPos);
+//    Serial.print(F("Spring Encoder: "));
+//    Serial.println(springPos);
   }
   
 }
