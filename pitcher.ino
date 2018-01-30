@@ -140,7 +140,6 @@ void setup() {
   
   //Ball Load Sequence Set-up
   loadSq.begin();
-  loadSq.trace(Serial);
   loadSq.onStep(0 , [] (int idx, int v, int up){    //First step of the loadSq is to grab the carriage
     Serial.println(F("loadSq state 1"));
     if (Loading.state()){
@@ -151,14 +150,14 @@ void setup() {
    // if (Loading.state()){
       springLoad.trigger(springLoad.EVT_START);
       springEn = false;
-      spring(-4096);
+      spring(4096);
   });  
   loadSq.onStep(2, newBall, newBall.EVT_ON);           //Call for a new ball
   loadSq.onStep(3, [] ( int idx, int v, int up ) {     //Return to previous preset
+    printStates();
     //runPreset(currentPreset);
     Loading.trigger(Loading.EVT_OFF);                  //Finish Loading Sequence
     Main.trigger(Main.EVT_STEP);                       //Transistion to Aiming
-    loadSq.trigger(loadSq.EVT_STEP);                  //Step loadSq S4->S0
   });
 
   fireSq.begin();
@@ -203,11 +202,11 @@ void setup() {
   ballReady.begin(BALL_IN,20)                           //when ballReady is HIGH for 20ms:
            .onChange(HIGH,ballReadyCB);                 // run callback that turns off newBall and turns on lift motor
                                                         //make lambda function: https://github.com/tinkerspy/Automaton/wiki/Introduction
-  ballLift.begin(BALL_LOAD);                            //Starts in IDLE state, BALL_LOAD: LOW
+  ballLift.begin(BALL_LOAD, true);                            //Starts in IDLE state, BALL_LOAD: LOW
   loadSense.begin(LOADED,200)                            //when loadSense is HIGH for 20ms:
            .onChange(HIGH,[] ( int idx, int v, int up ) {//turn off the lift motor and advance the LoadSq
             if (loadSq.state()==2){
-              ballLift.trigger(ballLift.EVT_ON);
+              ballLift.trigger(ballLift.EVT_OFF);
               loadSq.trigger(loadSq.EVT_STEP);         //Step loadSq S3->S4
             }
             });    
@@ -248,8 +247,9 @@ void setup() {
   
 loadEEPromPresets();                                  //load presets from memory
 
-automaton.run(); 
+automaton.run();
 Main.trigger(Main.EVT_STEP);
+printStates();
     
 }
 
