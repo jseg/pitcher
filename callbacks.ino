@@ -39,7 +39,7 @@ void savePreset(){
 }
 
 void ballReadyCB(int idx, int v, int up){                //called when ballReady microswitch goes HIGH
-  if (loadSq.state()==2){
+  if (loadSq.state()==1){
     newBall.trigger(newBall.EVT_OFF);       //turn off newBall signal
     ballLift.trigger(ballLift.EVT_ON);      //turn on ball lift signal LOW to run motor
     Serial.println(F("Ball Ready"));        //debug feedback

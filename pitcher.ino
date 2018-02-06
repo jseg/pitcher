@@ -151,9 +151,10 @@ void setup() {
       springLoad.trigger(springLoad.EVT_START);
       springEn = false;
       spring(4096);
+      newBall.trigger(newBall.EVT_ON);
   });  
-  loadSq.onStep(2, newBall, newBall.EVT_ON);           //Call for a new ball
-  loadSq.onStep(3, [] ( int idx, int v, int up ) {     //Return to previous preset
+  //loadSq.onStep(2, newBall, newBall.EVT_ON);           //Call for a new ball
+  loadSq.onStep(2, [] ( int idx, int v, int up ) {     //Return to previous preset
     printStates();
     //runPreset(currentPreset);
     Loading.trigger(Loading.EVT_OFF);                  //Finish Loading Sequence
@@ -195,7 +196,7 @@ void setup() {
       springPos = 300;
       springSet = 300;
       springEn = false;
-      loadSq.trigger(loadSq.EVT_STEP);                //Step loadSq S2->S3
+      //loadSq.trigger(loadSq.EVT_STEP);                //Step loadSq S2->S3
     });
   
   newBall.begin(LATCH);                                 //Starts in IDLE state, BALL_IN: LOW
@@ -205,7 +206,7 @@ void setup() {
   ballLift.begin(BALL_LOAD, true);                            //Starts in IDLE state, BALL_LOAD: LOW
   loadSense.begin(LOADED,200)                            //when loadSense is HIGH for 20ms:
            .onChange(HIGH,[] ( int idx, int v, int up ) {//turn off the lift motor and advance the LoadSq
-            if (loadSq.state()==2){
+            if (loadSq.state()==1){
               ballLift.trigger(ballLift.EVT_OFF);
               loadSq.trigger(loadSq.EVT_STEP);         //Step loadSq S3->S4
             }
