@@ -117,35 +117,34 @@ void runHome(){
 }
 
 void printPos(int idx, int v, int up ){
-  Serial.write(27);       // ESC command
-  Serial.print("[2J");    // clear screen command
-  Serial.write(27);
-  Serial.print("[H");     // cursor to home command
+  lcd.setCursor ( 0, 0 );  
   if(Loading.state()){
-    Serial.print(F("Loading....steps: "));
-    Serial.println(loadSq.state());
+    lcd.print(F("Loading....steps: "));
+    lcd.print(loadSq.state());
   }
   else if(Aiming.state()){
     if(edit){
-      Serial.print(F("Edit Preset:"));
-      Serial.println(currentPreset);
+      lcd.print(F("Edit Preset:"));
+      lcd.print(currentPreset);
     }
     else{
-      Serial.print(F("Aim to Preset:"));
-      Serial.println(currentPreset);
+      lcd.print(F("Aim to Preset:"));
+      lcd.print(currentPreset);
     }
   }
   else if(Firing.state()){
-    Serial.print(F("Firing....steps: "));
-    Serial.println(loadSq.state());
+    lcd.print(F("Firing....steps: "));
+    lcd.print(loadSq.state());
   }
-  
-  Serial.print(F("Pitch Encoder: "));
-  Serial.println(EncPitch.read());
-  Serial.print(F("Yaw Encoder: "));
-  Serial.println(EncYaw.read());
-  Serial.print(F("Spring Encoder: "));
-  Serial.println(springPos);
+  lcd.setCursor ( 0, 1 );  
+  lcd.print(F("Pitch Encoder: "));
+  lcd.print(EncPitch.read());
+  lcd.setCursor ( 0, 2 );  
+  lcd.print(F("Yaw Encoder: "));
+  lcd.print(EncYaw.read());
+  lcd.setCursor ( 0, 3 );  
+  lcd.print(F("Spring Encoder: "));
+  lcd.print(springPos);
 }
 
 void encoders(){
@@ -217,16 +216,16 @@ void feedback(){
 }
 
 void encoderSpring(){
-  byte oldSREG = SREG; //remember if interupts are on or off
-  noInterrupts(); //Turn off interrupts
+  //byte oldSREG = SREG; //remember if interupts are on or off
+  //noInterrupts(); //Turn off interrupts
   if(springDir) {
      springPos++;
   } 
   else {
     springPos--; 
   }
-  SREG = oldSREG; //Turn back on interrupts, if they were off
-  interrupts();
+  //SREG = oldSREG; //Turn back on interrupts, if they were off
+  //interrupts();
  }
 
  void nudge(int p, int y, int s){

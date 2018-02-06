@@ -1,5 +1,9 @@
-//#include <Wire.h>
-//#include <LiquidCrystal.h>
+
+
+#define EI_NOTEXTERNAL
+#include <EnableInterrupt.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 #include <TimerFive.h>
 #include <Key.h>          //installs w/ Keypad.h
 #include <Keypad.h>       //version 3.1.1
@@ -13,6 +17,9 @@
 //////////////////////////////////////
 //Program Objects And Global Variables
 //////////////////////////////////////
+//LCD
+LiquidCrystal_I2C lcd(0x27,20,4);  // set the LCD address to 0x27 for a 16 chars and 2 line display
+
 
 //Keypad
 
@@ -116,6 +123,10 @@ void setup() {
   Timer5.pwm(PITCH_PWM,0);
   Timer5.pwm(YAW_PWM,0);
   Timer5.pwm(SPRING_PWM,0);
+
+  //LCD Setup
+  lcd.init();  //initialize the lcd
+  lcd.backlight();  //open the backlight 
   
   //Keypad setup
   keypad.addEventListener(keypadEvent); // Add an event listener for the keypad. Callback in UI.ino
