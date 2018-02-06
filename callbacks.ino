@@ -16,8 +16,8 @@ void loadEEPromPresets(){
   for(int i = 0; i< NUM_PRESETS; i++)
  {
      for(int j = 0; j < NUM_MOTORS ;j++){
-       int value = EEPROM.read(b);
-       presets[i][j] = value;
+       int val = EEPROM.read(b);
+       presets[i][j] = val;
        b++;
      }
  }
@@ -30,18 +30,20 @@ void savePreset(){
     
        for( int j = 0; j < NUM_MOTORS ;j++){
         
-         int value = presets[i][j];
-         EEPROM.write(b, value);
-         Serial.println(value);
+         int val = presets[i][j];
+         EEPROM.write(b, val);
+         Serial.println(val);
          b++;
        }
    }
 }
 
 void ballReadyCB(int idx, int v, int up){                //called when ballReady microswitch goes HIGH
-  newBall.trigger(newBall.EVT_OFF);       //turn off newBall signal
-  ballLift.trigger(ballLift.EVT_OFF);      //turn on ball lift signal LOW to run motor
-  Serial.println(F("Ball Ready"));        //debug feedback
+  if (loadSq.state()==1){
+    newBall.trigger(newBall.EVT_OFF);       //turn off newBall signal
+    ballLift.trigger(ballLift.EVT_ON);      //turn on ball lift signal LOW to run motor
+    Serial.println(F("Ball Ready"));        //debug feedback
+  }
 }
 
 void runPreset(int num){
@@ -111,30 +113,56 @@ void runHome(){
     pitchHome.start();
     yawHome.start();
     springHome.start();
+    
 }
 
-//void printPos(int idx, int v, int up ){
-//  Serial.print(F("Pitch Encoder: "));
-//  Serial.println(EncPitch.read());
-//  Serial.print(F("Yaw Encoder: "));
-//  Serial.println(EncYaw.read());
-//}
+void printPos(int idx, int v, int up ){
+  Serial.write(27);       // ESC command
+  Serial.print("[2J");    // clear screen command
+  Serial.write(27);
+  Serial.print("[H");     // cursor to home command
+  if(Loading.state()){
+    Serial.print(F("Loading....steps: "));
+    Serial.println(loadSq.state());
+  }
+  else if(Aiming.state()){
+    if(edit){
+      Serial.print(F("Edit Preset:"));
+      Serial.println(currentPreset);
+    }
+    else{
+      Serial.print(F("Aim to Preset:"));
+      Serial.println(currentPreset);
+    }
+  }
+  else if(Firing.state()){
+    Serial.print(F("Firing....steps: "));
+    Serial.println(loadSq.state());
+  }
+  
+  Serial.print(F("Pitch Encoder: "));
+  Serial.println(EncPitch.read());
+  Serial.print(F("Yaw Encoder: "));
+  Serial.println(EncYaw.read());
+  Serial.print(F("Spring Encoder: "));
+  Serial.println(springPos);
+}
 
 void encoders(){
   if (pitchPos != EncPitch.read()){
     pitchPos = EncPitch.read();
-    Serial.print(F("Pitch Encoder: "));
-    Serial.println(EncPitch.read());  
+//    Serial.print(F("Pitch Encoder: "));
+//    Serial.println(EncPitch.read());  
   }
   if (yawPos != EncYaw.read()){
     yawPos = EncYaw.read();
-    Serial.print(F("Yaw Encoder: "));
-    Serial.println(EncYaw.read());
+//    Serial.print(F("Yaw Encoder: "));
+//    Serial.println(EncYaw.read());
   }
   if (springPos != lastSpringPos){
      lastSpringPos = springPos;
-    Serial.print(F("Spring Encoder: "));
-    Serial.println(springPos);
+//    Serial.print(F("Spring Encoder: "));
+//    Serial.println(springPos);
   }
   
 }
@@ -179,7 +207,7 @@ void feedback(){
  static bool moving = 0;
  if (moving != atSetPoint){
     moving = atSetPoint;
-    if(atSetPoint){
+    if(!atSetPoint){
       Serial.print(F("Moving now...")); 
     }
     else{

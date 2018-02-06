@@ -14,56 +14,56 @@ void keypadEvent(KeypadEvent key){
           if (Aiming.state()){
             runPreset(2);     //function to move set points to a new preset
             Serial.print(F("Pressed: "));        //feedback
-            Serial.println(1);
+            Serial.println(2);
             }
           break;
         case '3':
           if (Aiming.state()){
             runPreset(3);     //function to move set points to a new preset
             Serial.print(F("Pressed: "));        //feedback
-            Serial.println(1);
+            Serial.println(3);
             }
           break;
         case '4':
           if (Aiming.state()){
             runPreset(4);     //function to move set points to a new preset
             Serial.print(F("Pressed: "));        //feedback
-            Serial.println(1);
+            Serial.println(4);
             }
           break;
         case '5':
           if (Aiming.state()){
             runPreset(5);     //function to move set points to a new preset
             Serial.print(F("Pressed: "));        //feedback
-            Serial.println(1);
+            Serial.println(5);
             }
           break;
         case '6':
           if (Aiming.state()){
             runPreset(6);     //function to move set points to a new preset
             Serial.print(F("Pressed: "));        //feedback
-            Serial.println(1);
+            Serial.println(6);
             }
           break;
         case '7':
           if (Aiming.state()){
             runPreset(7);     //function to move set points to a new preset
             Serial.print(F("Pressed: "));        //feedback
-            Serial.println(1);
+            Serial.println(7);
             }
           break;
         case '8':
           if (Aiming.state()){
             runPreset(8);     //function to move set points to a new preset
             Serial.print(F("Pressed: "));        //feedback
-            Serial.println(1);
+            Serial.println(8);
             }
           break;
         case '9':
           if (Aiming.state()){
             runPreset(9);     //function to move set points to a new preset
             Serial.print(F("Pressed: "));        //feedback
-            Serial.println(1);
+            Serial.println(9);
             }
           break;
         case 'a':
@@ -74,9 +74,10 @@ void keypadEvent(KeypadEvent key){
         case 'd':       
         case 'e':
         case 'g':
-          Aiming.trigger(Aiming.EVT_OFF);
-          Main.trigger(Main.EVT_STEP);
-          fireSq.trigger(fireSq.EVT_STEP);
+          if(Aiming.state()){
+            Aiming.trigger(Aiming.EVT_OFF);  //Finished Aiming
+            Main.trigger(Main.EVT_STEP);     //Now Firing
+          }
           break;
         case 'h': 
         //callback
@@ -111,35 +112,46 @@ void keypadEvent(KeypadEvent key){
     case PRESSED:
         switch (key){
         case '1':
+            nudge(0,0,10);
+            break;
           break;
         case '2':
+          nudge(2,0,0);
           break;
         case '3':
           break;
         case '4':
+          nudge(0,-2,0);
           break;
         case '5':
           break;
         case '6':
+          nudge(0,2,0);
           break;
         case '7':
           break;
         case '8':
+          nudge(-2,0,0);
           break;
         case '9':
+          nudge(0,0,-10);
           break;
         case 'a':
-            //newBall.trigger(newBall.EVT_ON);
-            break;
         case 'b':
         case 'c': 
         case 'd':       
         case 'e':
+            break;
+        case 'f': loadDefaultPresets();
+            break;
         case 'g':
-          Aiming.trigger(Aiming.EVT_OFF);
-          Main.trigger(Main.EVT_STEP);
+          if(Aiming.state()){
+            Aiming.trigger(Aiming.EVT_OFF);
+            Main.trigger(Main.EVT_STEP);
+          }
+          break;
         case 'h': 
-        //callback
+            savePreset();
           break;
         case '#':  
            edit = false;
@@ -250,6 +262,12 @@ void cmd_callback( int idx, int v, int up ) {
       Serial.print(F("Sprint Setpoint: "));
       Serial.println(atoi(cmd.arg(3)));
       return;
+    case CMD_STATE:
+      printStates();
+      return;
+    case CMD_SERIAL:
+      printEncoders.start();
+      return;
   }
 }
 
@@ -272,4 +290,21 @@ void help(){
   Serial.println(F("pid bool         *enable (1) or disable (0) position control"));
   Serial.println(F("move num num num *run to position num num num"));
   
+}
+
+void printStates(){
+     Serial.println(F("*****************"));
+     Serial.print(F("Loading state: "));
+     Serial.println(Loading.state());
+     Serial.print(F("Aiming state: "));
+     Serial.println(Aiming.state());
+     Serial.print(F("Firing state: "));
+     Serial.println(Firing.state());
+     Serial.print(F("Main state: "));
+     Serial.println(Main.state());
+     Serial.print(F("loadSq state: "));
+     Serial.println(loadSq.state());
+     Serial.print(F("fireSq state: "));
+     Serial.println(fireSq.state());
+     Serial.println(F("*****************"));
 }
