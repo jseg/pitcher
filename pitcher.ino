@@ -252,10 +252,10 @@ void setup() {
     }); 
 
 
- printEncoders.begin(250)
+ printEncoders.begin(500)
             .onTimer(printPos)
-            .repeat(-1);
-            
+            .repeat(-1)
+            .start();
   
 loadEEPromPresets();                                  //load presets from memory
 

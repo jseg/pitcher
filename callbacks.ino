@@ -117,6 +117,7 @@ void runHome(){
 }
 
 void printPos(int idx, int v, int up ){
+  lcd.clear();
   lcd.setCursor ( 0, 0 );  
   if(Loading.state()){
     lcd.print(F("Loading....steps: "));
@@ -145,6 +146,7 @@ void printPos(int idx, int v, int up ){
   lcd.setCursor ( 0, 3 );  
   lcd.print(F("Spring Encoder: "));
   lcd.print(springPos);
+  return;
 }
 
 void encoders(){
