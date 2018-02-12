@@ -271,6 +271,59 @@ void cmd_callback( int idx, int v, int up ) {
   }
 }
 
+void printPos(int idx, int v, int up ){
+  static bool refresh = true; 
+  static int lastStep = 0;
+  static int lastPreset = 0;
+  static bool lastEdit = false;
+  if(Main.state()!=lastStep){    //Detect if the state has changed
+    lastStep=Main.state();
+    refresh = true;  
+  }
+  if(edit!=lastEdit){        //Check if edit mode has changed
+    lastEdit = edit;
+    refresh = true;
+  }
+  if(currentPreset!=lastPreset){  //Check if the preset has changed
+    lastPreset = currentPreset;
+    refresh = true;
+  }
+  
+if(refresh){
+  if(Loading.state()){
+      lcd.setCursor ( 0, 0 );
+      lcd.print(F("Loading"));
+  }
+  else if(Aiming.state()){
+    if(edit){
+        lcd.setCursor ( 0, 0 );
+        lcd.print(F("Edit Preset: "));
+        lcd.print(currentPreset);
+    }
+    else{
+      lcd.print(F("Aim to Preset: "));
+      lcd.print(currentPreset);
+    }
+  }
+  else if(Firing.state()){
+    lcd.print(F("Firing"));
+  }
+  lcd.setCursor ( 0, 1 );  
+  lcd.print(F("Pitch Encoder: "));
+  lcd.setCursor ( 0, 2 );  
+  lcd.print(F("Yaw Encoder: "));
+  lcd.setCursor ( 0, 3 );  
+  lcd.print(F("Spring Encoder: "));
+  refresh = false;
+}
+    lcd.setCursor ( 17, 1 );
+    lcd.print(EncPitch.read());
+    lcd.setCursor ( 17, 2 );
+    lcd.print(EncYaw.read());
+    lcd.setCursor ( 17, 3 ); 
+    lcd.print(springPos);
+}
+
 void help(){
   Serial.println(F("Recognized commands:"));
   Serial.println(F("high pin         *set a pin to HIGH"));

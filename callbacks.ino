@@ -41,6 +41,7 @@ void savePreset(){
 void ballReadyCB(int idx, int v, int up){                //called when ballReady microswitch goes HIGH
   if (loadSq.state()==1){
     newBall.trigger(newBall.EVT_OFF);       //turn off newBall signal
+    delay(150);                             //quick delay to give the ball a moment to settle
     ballLift.trigger(ballLift.EVT_ON);      //turn on ball lift signal LOW to run motor
     Serial.println(F("Ball Ready"));        //debug feedback
   }
@@ -116,36 +117,6 @@ void runHome(){
     
 }
 
-void printPos(int idx, int v, int up ){
-  lcd.setCursor ( 0, 0 );  
-  if(Loading.state()){
-    lcd.print(F("Loading....steps: "));
-    lcd.print(loadSq.state());
-  }
-  else if(Aiming.state()){
-    if(edit){
-      lcd.print(F("Edit Preset:"));
-      lcd.print(currentPreset);
-    }
-    else{
-      lcd.print(F("Aim to Preset:"));
-      lcd.print(currentPreset);
-    }
-  }
-  else if(Firing.state()){
-    lcd.print(F("Firing....steps: "));
-    lcd.print(loadSq.state());
-  }
-  lcd.setCursor ( 0, 1 );  
-  lcd.print(F("Pitch Encoder: "));
-  lcd.print(EncPitch.read());
-  lcd.setCursor ( 0, 2 );  
-  lcd.print(F("Yaw Encoder: "));
-  lcd.print(EncYaw.read());
-  lcd.setCursor ( 0, 3 );  
-  lcd.print(F("Spring Encoder: "));
-  lcd.print(springPos);
-}
 
 void encoders(){
   if (pitchPos != EncPitch.read()){
