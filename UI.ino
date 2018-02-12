@@ -112,29 +112,29 @@ void keypadEvent(KeypadEvent key){
     case PRESSED:
         switch (key){
         case '1':
-            nudge(0,0,10);
+            nudge(0,0,2);
             break;
           break;
         case '2':
-          nudge(2,0,0);
+          nudge(1,0,0);
           break;
         case '3':
           break;
         case '4':
-          nudge(0,-2,0);
+          nudge(0,-1,0);
           break;
         case '5':
           break;
         case '6':
-          nudge(0,2,0);
+          nudge(0,1,0);
           break;
         case '7':
           break;
         case '8':
-          nudge(-2,0,0);
+          nudge(-1,0,0);
           break;
         case '9':
-          nudge(0,0,-10);
+          nudge(0,0,-2);
           break;
         case 'a':
         case 'b':
@@ -290,6 +290,7 @@ void printPos(int idx, int v, int up ){
   }
   
 if(refresh){
+  lcd.clear();
   if(Loading.state()){
       lcd.setCursor ( 0, 0 );
       lcd.print(F("Loading"));
@@ -317,10 +318,16 @@ if(refresh){
   refresh = false;
 }
     lcd.setCursor ( 17, 1 );
+    lcd.print("   ");
+     lcd.setCursor ( 17, 1 ); 
     lcd.print(EncPitch.read());
     lcd.setCursor ( 17, 2 );
+    lcd.print("   ");
+     lcd.setCursor ( 17, 2 );
     lcd.print(EncYaw.read());
-    lcd.setCursor ( 17, 3 ); 
+    lcd.setCursor ( 17, 3 );
+    lcd.print("   ");
+     lcd.setCursor ( 17, 3 ); 
     lcd.print(springPos);
 }
 
