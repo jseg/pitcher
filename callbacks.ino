@@ -117,7 +117,6 @@ void runHome(){
     
 }
 
-
 void encoders(){
   if (pitchPos != EncPitch.read()){
     pitchPos = EncPitch.read();
