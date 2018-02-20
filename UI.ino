@@ -112,29 +112,29 @@ void keypadEvent(KeypadEvent key){
     case PRESSED:
         switch (key){
         case '1':
-            nudge(0,0,10);
+            nudge(0,0,2);
             break;
           break;
         case '2':
-          nudge(2,0,0);
+          nudge(1,0,0);
           break;
         case '3':
           break;
         case '4':
-          nudge(0,-2,0);
+          nudge(0,-1,0);
           break;
         case '5':
           break;
         case '6':
-          nudge(0,2,0);
+          nudge(0,1,0);
           break;
         case '7':
           break;
         case '8':
-          nudge(-2,0,0);
+          nudge(-1,0,0);
           break;
         case '9':
-          nudge(0,0,-10);
+          nudge(0,0,-2);
           break;
         case 'a':
         case 'b':
@@ -269,6 +269,66 @@ void cmd_callback( int idx, int v, int up ) {
       printEncoders.start();
       return;
   }
+}
+
+void printPos(int idx, int v, int up ){
+  static bool refresh = true; 
+  static int lastStep = 0;
+  static int lastPreset = 0;
+  static bool lastEdit = false;
+  if(Main.state()!=lastStep){    //Detect if the state has changed
+    lastStep=Main.state();
+    refresh = true;  
+  }
+  if(edit!=lastEdit){        //Check if edit mode has changed
+    lastEdit = edit;
+    refresh = true;
+  }
+  if(currentPreset!=lastPreset){  //Check if the preset has changed
+    lastPreset = currentPreset;
+    refresh = true;
+  }
+  
+if(refresh){
+  lcd.clear();
+  if(Loading.state()){
+      lcd.setCursor ( 0, 0 );
+      lcd.print(F("Loading"));
+  }
+  else if(Aiming.state()){
+    if(edit){
+        lcd.setCursor ( 0, 0 );
+        lcd.print(F("Edit Preset: "));
+        lcd.print(currentPreset);
+    }
+    else{
+      lcd.print(F("Aim to Preset: "));
+      lcd.print(currentPreset);
+    }
+  }
+  else if(Firing.state()){
+    lcd.print(F("Firing"));
+  }
+  lcd.setCursor ( 0, 1 );  
+  lcd.print(F("Pitch Encoder: "));
+  lcd.setCursor ( 0, 2 );  
+  lcd.print(F("Yaw Encoder: "));
+  lcd.setCursor ( 0, 3 );  
+  lcd.print(F("Spring Encoder: "));
+  refresh = false;
+}
+    lcd.setCursor ( 17, 1 );
+    lcd.print("   ");
+     lcd.setCursor ( 17, 1 ); 
+    lcd.print(EncPitch.read());
+    lcd.setCursor ( 17, 2 );
+    lcd.print("   ");
+     lcd.setCursor ( 17, 2 );
+    lcd.print(EncYaw.read());
+    lcd.setCursor ( 17, 3 );
+    lcd.print("   ");
+     lcd.setCursor ( 17, 3 ); 
+    lcd.print(springPos);
 }
 
 void help(){

@@ -8,11 +8,12 @@
 #define BALL_IN             24      // Microswitch sensor pulled low N.O.
 #define LOADED              25      // Microswitch sensor pulled low N.O.
 
-#define PITCH_A             20      // the pin number of the Pitch Encoder A     Sensor
-#define PITCH_B             21      // the pin number of the Pitch Encoder B     Sensor
+#define PITCH_A            18      // the pin number of the Pitch Encoder A     Sensor
+#define PITCH_B            19      // the pin number of the Pitch Encoder B     Sensor
 #define YAW_A               2       // the pin number of the Yaw Encoder A       Sensor
 #define YAW_B               3       // the pin number of the Yaw Encoder B       Sensor
-#define SPRING_COUNTER      18      //pseudo encoder
+//#define SPRING_COUNTER      18      //pseudo encoder
+#define SPRING_COUNTER      A8      //pseudo encoder
 
 //#define KEY_PAD             (31,32,33,34,35,36,37,38,39)    
 //                                    // the pin numbers of the
@@ -51,7 +52,7 @@
 
 //Digital Signals
 #define LATCH               23      // Signal to call for a new ball
-#define LCD                 (15,16) // the pin numbers of the 4X20 LCD Display
+#define LCD                 (2,3) // the pin numbers of the 4X20 LCD Display
 
 
 /////////////////////////////////

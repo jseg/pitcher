@@ -41,6 +41,7 @@ void savePreset(){
 void ballReadyCB(int idx, int v, int up){                //called when ballReady microswitch goes HIGH
   if (loadSq.state()==1){
     newBall.trigger(newBall.EVT_OFF);       //turn off newBall signal
+    delay(150);                             //quick delay to give the ball a moment to settle
     ballLift.trigger(ballLift.EVT_ON);      //turn on ball lift signal LOW to run motor
     Serial.println(F("Ball Ready"));        //debug feedback
   }
@@ -116,38 +117,6 @@ void runHome(){
     
 }
 
-void printPos(int idx, int v, int up ){
-  Serial.write(27);       // ESC command
-  Serial.print("[2J");    // clear screen command
-  Serial.write(27);
-  Serial.print("[H");     // cursor to home command
-  if(Loading.state()){
-    Serial.print(F("Loading....steps: "));
-    Serial.println(loadSq.state());
-  }
-  else if(Aiming.state()){
-    if(edit){
-      Serial.print(F("Edit Preset:"));
-      Serial.println(currentPreset);
-    }
-    else{
-      Serial.print(F("Aim to Preset:"));
-      Serial.println(currentPreset);
-    }
-  }
-  else if(Firing.state()){
-    Serial.print(F("Firing....steps: "));
-    Serial.println(loadSq.state());
-  }
-  
-  Serial.print(F("Pitch Encoder: "));
-  Serial.println(EncPitch.read());
-  Serial.print(F("Yaw Encoder: "));
-  Serial.println(EncYaw.read());
-  Serial.print(F("Spring Encoder: "));
-  Serial.println(springPos);
-}
-
 void encoders(){
   if (pitchPos != EncPitch.read()){
     pitchPos = EncPitch.read();
@@ -217,16 +186,16 @@ void feedback(){
 }
 
 void encoderSpring(){
-  byte oldSREG = SREG; //remember if interupts are on or off
-  noInterrupts(); //Turn off interrupts
+  //byte oldSREG = SREG; //remember if interupts are on or off
+  //noInterrupts(); //Turn off interrupts
   if(springDir) {
      springPos++;
   } 
   else {
     springPos--; 
   }
-  SREG = oldSREG; //Turn back on interrupts, if they were off
-  interrupts();
+  //SREG = oldSREG; //Turn back on interrupts, if they were off
+  //interrupts();
  }
 
  void nudge(int p, int y, int s){

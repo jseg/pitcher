@@ -1,5 +1,9 @@
-//#include <Wire.h>
-//#include <LiquidCrystal.h>
+
+
+#define EI_NOTEXTERNAL
+#include <EnableInterrupt.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 #include <TimerFive.h>
 #include <Key.h>          //installs w/ Keypad.h
 #include <Keypad.h>       //version 3.1.1
@@ -13,6 +17,9 @@
 //////////////////////////////////////
 //Program Objects And Global Variables
 //////////////////////////////////////
+//LCD
+LiquidCrystal_I2C lcd(0x27,20,4);  // set the LCD address to 0x27 for a 16 chars and 2 line display
+bool newStep = true; 
 
 //Keypad
 
@@ -116,6 +123,10 @@ void setup() {
   Timer5.pwm(PITCH_PWM,0);
   Timer5.pwm(YAW_PWM,0);
   Timer5.pwm(SPRING_PWM,0);
+
+  //LCD Setup
+  lcd.init();  //initialize the lcd
+  lcd.backlight();  //open the backlight 
   
   //Keypad setup
   keypad.addEventListener(keypadEvent); // Add an event listener for the keypad. Callback in UI.ino
@@ -151,6 +162,7 @@ void setup() {
       springLoad.trigger(springLoad.EVT_START);
       springEn = false;
       spring(4096);
+      yawSet = 35;
       newBall.trigger(newBall.EVT_ON);
   });  
   //loadSq.onStep(2, newBall, newBall.EVT_ON);           //Call for a new ball
@@ -207,7 +219,7 @@ void setup() {
   loadSense.begin(LOADED,200)                            //when loadSense is HIGH for 20ms:
            .onChange(HIGH,[] ( int idx, int v, int up ) {//turn off the lift motor and advance the LoadSq
             if (loadSq.state()==1){
-              ballLift.trigger(ballLift.EVT_OFF);
+              ballLift.trigger(ballLift.EVT_OFF);      
               loadSq.trigger(loadSq.EVT_STEP);         //Step loadSq S3->S4
             }
             });    
@@ -241,10 +253,10 @@ void setup() {
     }); 
 
 
- printEncoders.begin(250)
+ printEncoders.begin(100)
             .onTimer(printPos)
-            .repeat(-1);
-            
+            .repeat(-1)
+            .start();
   
 loadEEPromPresets();                                  //load presets from memory
 
