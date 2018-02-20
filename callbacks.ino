@@ -1,5 +1,11 @@
+void loadDefaultPreset(int x){
+   for( int j = 0; j < NUM_MOTORS ;j++){
+     presets[x][j] = defaultPresets[x][j];
+   }
+}
 
-void loadDefaultPresets(){
+
+void loadAllDefaultPresets(){
  Serial.println("Load Default Presets");
  for( int i = 0; i< NUM_PRESETS; i++)
  {

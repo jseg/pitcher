@@ -28,7 +28,7 @@ int presets[NUM_PRESETS][NUM_MOTORS]=
 int defaultPresets[NUM_PRESETS][NUM_MOTORS] =
 // {Pitch, Yaw, Spring}
 {
-   {0, 0, 0},    //0  Keys arranged like a phone keypad '1' top left
+   {0, 35, 300},    //0  Keys arranged like a phone keypad '1' top left
    {60, 10, 200 },  //1
    {60, 35, 200 },  //2
    {60, 60, 200 },  //3

@@ -57,6 +57,7 @@ int pitchSet = 0, yawSet = 0, springSet = 0;  //Motor Setpoints
 int pitchSpeed = 0, yawSpeed = 0, springSpeed = 0;
 bool atSetPoint = false;
 int currentPreset = 5;
+int lastPreset = 5;
 
 //State Machines
 //There are four global machine states "Loading", "Aiming", "Firing", and "Main". "Loading", 
@@ -90,6 +91,7 @@ Atm_timer springLoad;
 //Objects related to Firing Sequence
 Atm_step fireSq;
 Atm_timer moving;
+Atm_digital doorSense;
 Atm_led fireSol;
 Atm_led doorSol;
 Atm_led sound;
@@ -145,7 +147,7 @@ void setup() {
   Main.onStep( 2, Firing, Firing.EVT_ON );  //Firing
   Loading.begin()
          .onChange(true, loadSq, loadSq.EVT_STEP); //Step loadSq S0->S1
-  Aiming.begin();
+  Aiming.begin(FALSE);
   Firing.begin()
         .onChange(true, fireSq, fireSq.EVT_STEP); //Step fireSq S0->S1
   
@@ -168,7 +170,7 @@ void setup() {
   //loadSq.onStep(2, newBall, newBall.EVT_ON);           //Call for a new ball
   loadSq.onStep(2, [] ( int idx, int v, int up ) {     //Return to previous preset
     printStates();
-    //runPreset(currentPreset);
+    currentPreset = 0;
     Loading.trigger(Loading.EVT_OFF);                  //Finish Loading Sequence
     Main.trigger(Main.EVT_STEP);                       //Transistion to Aiming
   });
@@ -178,14 +180,23 @@ void setup() {
     fireSq.onStep(1, [](int idx, int v, int up){    //Throw the ball!
       Serial.println(F("Fire in the hole!"));
       doorSol.trigger(doorSol.EVT_BLINK);
-      fireSol.trigger(fireSol.EVT_BLINK);
+      //fireSq.trigger(fireSq.EVT_STEP);
+      //fireSol.trigger(fireSol.EVT_BLINK);
       });
 
     doorSol.begin(SAFETY_DOOR,true).blink(2000,250,1);
-    fireSol.begin(FIRE_SOL).blink(2005,250,1)
+
+    doorSense.begin(DOOR_SENSE,20)                            //when loadSense is HIGH for 20ms:
+           .onChange(LOW,[] ( int idx, int v, int up ) {//turn off the lift motor and advance the LoadSq
+              if (fireSq.state()==1){
+                fireSol.trigger(fireSol.EVT_BLINK);
+              }
+            });
+    fireSol.begin(FIRE_SOL,true).blink(500,250,1)
            .onFinish([](int idx, int v, int up){
            Firing.trigger(Firing.EVT_OFF);
-           Main.trigger(Main.EVT_STEP); 
+           Main.trigger(Main.EVT_STEP);
+           lastPreset = currentPreset; 
            });
       
 
