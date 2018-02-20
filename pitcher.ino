@@ -147,7 +147,7 @@ void setup() {
   Main.onStep( 2, Firing, Firing.EVT_ON );  //Firing
   Loading.begin()
          .onChange(true, loadSq, loadSq.EVT_STEP); //Step loadSq S0->S1
-  Aiming.begin(FALSE);
+  Aiming.begin(false);
   Firing.begin()
         .onChange(true, fireSq, fireSq.EVT_STEP); //Step fireSq S0->S1
   

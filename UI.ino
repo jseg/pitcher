@@ -229,7 +229,7 @@ void cmd_callback( int idx, int v, int up ) {
       runPreset(pin);     //function to move set points to a new preset
       return;
     case CMD_EEPROMSETUP:  //Comand to set-up eeprom on a new unit
-      loadDefaultPresets();
+      loadAllDefaultPresets();
       savePreset();
     case CMD_PITCH:
       pitch(pin);
