@@ -129,6 +129,7 @@ void setup() {
   //LCD Setup
   lcd.init();  //initialize the lcd
   lcd.backlight();  //open the backlight 
+  delay(50);
   
   //Keypad setup
   keypad.addEventListener(keypadEvent); // Add an event listener for the keypad. Callback in UI.ino
@@ -147,7 +148,7 @@ void setup() {
   Main.onStep( 2, Firing, Firing.EVT_ON );  //Firing
   Loading.begin()
          .onChange(true, loadSq, loadSq.EVT_STEP); //Step loadSq S0->S1
-  Aiming.begin(false);
+  Aiming.begin(FALSE);
   Firing.begin()
         .onChange(true, fireSq, fireSq.EVT_STEP); //Step fireSq S0->S1
   
@@ -227,7 +228,7 @@ void setup() {
            .onChange(HIGH,ballReadyCB);                 // run callback that turns off newBall and turns on lift motor
                                                         //make lambda function: https://github.com/tinkerspy/Automaton/wiki/Introduction
   ballLift.begin(BALL_LOAD, true);                            //Starts in IDLE state, BALL_LOAD: LOW
-  loadSense.begin(LOADED,200)                            //when loadSense is HIGH for 20ms:
+  loadSense.begin(LOADED,50)                            //when loadSense is HIGH for 50ms:
            .onChange(HIGH,[] ( int idx, int v, int up ) {//turn off the lift motor and advance the LoadSq
             if (loadSq.state()==1){
               ballLift.trigger(ballLift.EVT_OFF);      
