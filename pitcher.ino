@@ -150,7 +150,7 @@ void setup() {
   Main.onStep( 2, Firing, Firing.EVT_ON );  //Firing
   Loading.begin()
          .onChange(true, loadSq, loadSq.EVT_STEP); //Step loadSq S0->S1
-  Aiming.begin(FALSE);
+  Aiming.begin();
   Firing.begin()
         .onChange(true, fireSq, fireSq.EVT_STEP); //Step fireSq S0->S1
   
@@ -183,14 +183,12 @@ void setup() {
     fireSq.onStep(1, [](int idx, int v, int up){    //Throw the ball!
       Serial.println(F("Fire in the hole!"));
       doorSol.trigger(doorSol.EVT_BLINK);
-      //fireSq.trigger(fireSq.EVT_STEP);
-      //fireSol.trigger(fireSol.EVT_BLINK);
       });
 
     doorSol.begin(SAFETY_DOOR,true).blink(2000,250,1);
 
     doorSense.begin(DOOR_SENSE,20)                            //when loadSense is HIGH for 20ms:
-           .onChange(LOW,[] ( int idx, int v, int up ) {//turn off the lift motor and advance the LoadSq
+           .onChange(LOW,[] ( int idx, int v, int up ) {      //turn off the lift motor and advance the LoadSq
               if (fireSq.state()==1){
                 soundGrunt.trigger(soundGrunt.EVT_BLINK);
               }
@@ -200,7 +198,7 @@ void setup() {
     .onFinish([](int idx, int v, int up){
            automaton.delay(flightTime);
            fireSol.trigger(fireSol.EVT_BLINK);
-           soundCrack.trigger(soundCrack.EVT_BlINK);
+           soundCrack.trigger(soundCrack.EVT_BLINK);
            });
     
     soundCrack.begin(SOUND_CRACK,true).blink(50,0,1);
@@ -239,7 +237,7 @@ void setup() {
   ballReady.begin(BALL_IN,20)                           //when ballReady is HIGH for 20ms:
            .onChange(HIGH,ballReadyCB);                 // run callback that turns off newBall and turns on lift motor
                                                         //make lambda function: https://github.com/tinkerspy/Automaton/wiki/Introduction
-  ballLift.begin(BALL_LOAD, true);                      /Starts in IDLE state, BALL_LOAD: LOW
+  ballLift.begin(BALL_LOAD, true);                      //Starts in IDLE state, BALL_LOAD: LOW
   loadSense.begin(LOADED,50)                            //when loadSense is HIGH for 50ms:
            .onChange(HIGH,[] ( int idx, int v, int up ) {//turn off the lift motor and advance the LoadSq
             if (loadSq.state()==1){
