@@ -87,7 +87,7 @@ Atm_led newBall; //Controlls the "Latch" signal to call for a new ball from the 
 Atm_digital ballReady; //Microswitch to signal that a ball is ready to load
 Atm_digital loadSense; //Mircoswitch under the loading arm depressed and high at idle
 Atm_timer springLoad;
-int flightTime = 300;
+int flightTime = 1000;
 
 //Objects related to Firing Sequence
 Atm_step fireSq;
@@ -194,14 +194,15 @@ void setup() {
               }
             });
     
-    soundGrunt.begin(SOUND_GRUNT,true).blink(50,0,1)
+    soundGrunt.begin(SOUND_GRUNT,true).blink(300,0,1)
     .onFinish([](int idx, int v, int up){
            automaton.delay(flightTime);
            fireSol.trigger(fireSol.EVT_BLINK);
+           automaton.delay(SPEED);
            soundCrack.trigger(soundCrack.EVT_BLINK);
            });
     
-    soundCrack.begin(SOUND_CRACK,true).blink(50,0,1);
+    soundCrack.begin(SOUND_CRACK,true).blink(300,0,1);
     
     fireSol.begin(FIRE_SOL,true).blink(500,250,1)
            .onFinish([](int idx, int v, int up){
