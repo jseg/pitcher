@@ -3,7 +3,7 @@
 #define ID  0
 #define DIR1  1
 #define DIR2  2
-#define SPEED  300
+#define SPEED  450
 #define NUM_MOTORS  3
 #define NUM_PRESETS  10
 #define PITCH_MIN 1750 //minimum output for pitch pid controller

@@ -24,6 +24,7 @@
 //Outputs
 
 //Sounds
+
 #define SOUND_ON            13     // the pin number for "ON"                    Sound    input PIn
 #define SOUND_CRACK         9      // the pin number for "Crack"                  Sound    input PIn
 #define SOUND_GRUNT         10     // the pin number for "GRUNT"                 Sound    input PIn

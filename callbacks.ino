@@ -61,6 +61,7 @@ void runPreset(int num){
   yawSet = presets[num][1];
   springSet = presets[num][2];
   currentPreset = num;
+  moving.trigger(moving.EVT_START);
   return;
 }
 

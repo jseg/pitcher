@@ -14,10 +14,10 @@ void initializeOutputs(){  //set pin modes and intial states
   digitalWrite(SOUND_CRACK,HIGH);
   pinMode(SOUND_GRUNT,OUTPUT);
   digitalWrite(SOUND_GRUNT,HIGH);
-  pinMode(SOUND_FOUR,OUTPUT);
-  digitalWrite(SOUND_FOUR,HIGH);
-  pinMode(SOUND_FIVE,OUTPUT);
-  digitalWrite(SOUND_FIVE,HIGH);
+  pinMode(SOUND_EXPLODE,OUTPUT);
+  digitalWrite(SOUND_EXPLODE,HIGH);
+  pinMode(SOUND_READY,OUTPUT);
+  digitalWrite(SOUND_READY,HIGH);
   pinMode(SOUND_SIX,OUTPUT);
   digitalWrite(SOUND_SIX,HIGH);
   pinMode(SOUND_SEVEN,OUTPUT);
