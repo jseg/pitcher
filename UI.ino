@@ -67,17 +67,27 @@ void keypadEvent(KeypadEvent key){
             }
           break;
         case 'a':flightTime=198;
+        break;
         case 'b':flightTime=171;
+        break;
         case 'c':flightTime=144; 
-        case 'd':flightTime=117;       
+        break;
+        case 'd':flightTime=117;    
+        break;   
         case 'e':flightTime=90;
+        break;
         case 'f':flightTime=63;
+        break;
         case 'g':flightTime=36;
+        break;
         case 'h':flightTime=9;
+        break;
         //callback
           break;
         case '#':
           if(Aiming.state()){
+            soundExplode.trigger(soundExplode.EVT_BLINK);
+            automaton.delay(3000);
             Aiming.trigger(Aiming.EVT_OFF);  //Finished Aiming
             Main.trigger(Main.EVT_STEP);     //Now Firing
           }

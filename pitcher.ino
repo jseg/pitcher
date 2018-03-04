@@ -198,17 +198,20 @@ void setup() {
            .onChange(LOW,[] ( int idx, int v, int up ) {      //turn off the lift motor and advance the LoadSq
               if (fireSq.state()==1){
                 soundGrunt.trigger(soundGrunt.EVT_BLINK);
-                automaton.delay(flightTime);
+                Serial.println(millis());
+                automaton.delay(flightTime+SOUND_DELAY);
+                Serial.println(millis());
                 fireSol.trigger(fireSol.EVT_BLINK);
-                automaton.delay(SPEED);
+                automaton.delay(SPEED-SOUND_DELAY);
+                Serial.println(millis());
                 soundCrack.trigger(soundCrack.EVT_BLINK);
               }
             });
     
-    soundGrunt.begin(SOUND_GRUNT,true).blink(300,0,1);
-    soundCrack.begin(SOUND_CRACK,true).blink(300,0,1);
-    soundExplode.begin(SOUND_EXPLODE,true).blink(300,0,1);
-    soundReady.begin(SOUND_READY,true).blink(300,0,1);
+    soundGrunt.begin(SOUND_GRUNT,true).blink(130,0,1);
+    soundCrack.begin(SOUND_CRACK,true).blink(130,0,1);
+    soundExplode.begin(SOUND_EXPLODE,true).blink(130,0,1);
+    soundReady.begin(SOUND_READY,true).blink(130,0,1);
     
     fireSol.begin(FIRE_SOL,true).blink(500,250,1)
            .onFinish([](int idx, int v, int up){
@@ -225,12 +228,12 @@ void setup() {
         pitchEn = false;
         yawEn = false;
         springEn = false;
-        if (Aiming.state()){
-          soundExplode.trigger(soundExplode.EVT_BLINK);
-        }
-        else{
+//        if (Aiming.state()){
+//          soundExplode.trigger(soundExplode.EVT_BLINK);
+//        }
+//        else{
           fireSq.trigger(fireSq.EVT_STEP);//Step fire sequence S1->S2
-        }
+//        }
         moving.trigger(moving.EVT_STOP);
       }
       });
