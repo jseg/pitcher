@@ -89,12 +89,18 @@ Atm_digital loadSense; //Mircoswitch under the loading arm depressed and high at
 Atm_timer springLoad;
 int flightTime = 1000;
 
+Atm_step aimSq;
+
 //Objects related to Firing Sequence
 Atm_step fireSq;
 Atm_timer moving;
 Atm_digital doorSense;
 Atm_led fireSol;
 Atm_led doorSol;
+
+//Sound Objects
+Atm_led soundReady;
+Atm_led soundExplode;
 Atm_led soundGrunt;
 Atm_led soundCrack;
 
@@ -174,6 +180,7 @@ void setup() {
   loadSq.onStep(2, [] ( int idx, int v, int up ) {     //Return to previous preset
     printStates();
     currentPreset = 0;
+    soundReady.trigger(soundReady.EVT_BLINK);
     Loading.trigger(Loading.EVT_OFF);                  //Finish Loading Sequence
     Main.trigger(Main.EVT_STEP);                       //Transistion to Aiming
   });
@@ -191,18 +198,17 @@ void setup() {
            .onChange(LOW,[] ( int idx, int v, int up ) {      //turn off the lift motor and advance the LoadSq
               if (fireSq.state()==1){
                 soundGrunt.trigger(soundGrunt.EVT_BLINK);
+                automaton.delay(flightTime);
+                fireSol.trigger(fireSol.EVT_BLINK);
+                automaton.delay(SPEED);
+                soundCrack.trigger(soundCrack.EVT_BLINK);
               }
             });
     
-    soundGrunt.begin(SOUND_GRUNT,true).blink(300,0,1)
-    .onFinish([](int idx, int v, int up){
-           automaton.delay(flightTime);
-           fireSol.trigger(fireSol.EVT_BLINK);
-           automaton.delay(SPEED);
-           soundCrack.trigger(soundCrack.EVT_BLINK);
-           });
-    
+    soundGrunt.begin(SOUND_GRUNT,true).blink(300,0,1);
     soundCrack.begin(SOUND_CRACK,true).blink(300,0,1);
+    soundExplode.begin(SOUND_EXPLODE,true).blink(300,0,1);
+    soundReady.begin(SOUND_READY,true).blink(300,0,1);
     
     fireSol.begin(FIRE_SOL,true).blink(500,250,1)
            .onFinish([](int idx, int v, int up){
@@ -212,16 +218,20 @@ void setup() {
            });
       
 
-    moving.begin(200)                       //initialize timer at 200 milli secs
+    moving.begin(100)                       //initialize timer at 200 milli secs
          .repeat(-1)
          .onTimer( [] ( int idx, int v, int up ) {      //lambda function that turns off motor
       if(atSetPoint){
-      pitchEn = false;
-      yawEn = false;
-      springEn = false;
-      fireSq.trigger(fireSq.EVT_STEP);                //Step fire sequence S1->S2
-      moving.trigger(moving.EVT_STOP);
-      Serial.println(F("Still moving...")); 
+        pitchEn = false;
+        yawEn = false;
+        springEn = false;
+        if (Aiming.state()){
+          soundExplode.trigger(soundExplode.EVT_BLINK);
+        }
+        else{
+          fireSq.trigger(fireSq.EVT_STEP);//Step fire sequence S1->S2
+        }
+        moving.trigger(moving.EVT_STOP);
       }
       });
    

@@ -66,37 +66,25 @@ void keypadEvent(KeypadEvent key){
             Serial.println(9);
             }
           break;
-        case 'a':
-            //newBall.trigger(newBall.EVT_ON);
-            break;
-        case 'b':
-        case 'c': 
-        case 'd':       
-        case 'e':
-        case 'g':
+        case 'a':flightTime=198;
+        case 'b':flightTime=171;
+        case 'c':flightTime=144; 
+        case 'd':flightTime=117;       
+        case 'e':flightTime=90;
+        case 'f':flightTime=63;
+        case 'g':flightTime=36;
+        case 'h':flightTime=9;
+        //callback
+          break;
+        case '#':
           if(Aiming.state()){
             Aiming.trigger(Aiming.EVT_OFF);  //Finished Aiming
             Main.trigger(Main.EVT_STEP);     //Now Firing
           }
-          break;
-        case 'h': 
-        //callback
-          break;
-        case '#':
-          edit = true;
-          break;       
+          break;    
         case '*':
-          pitchEn = false;
-          yawEn = false;
-          springEn = false;
-          pitch(0);
-          yaw(0);
-          spring(0);
-          //callback
-          break;
-        break;
-        
-          
+          edit = true;
+          break;   
         }
         break;
 
@@ -145,29 +133,19 @@ void keypadEvent(KeypadEvent key){
         case 'f': loadDefaultPresets();
             break;
         case 'g':
-          if(Aiming.state()){
-            Aiming.trigger(Aiming.EVT_OFF);
-            Main.trigger(Main.EVT_STEP);
-          }
           break;
         case 'h': 
             savePreset();
           break;
-        case '#':  
-           edit = false;
-           break;     
+        case '#':
+          if(Aiming.state()){
+            Aiming.trigger(Aiming.EVT_OFF);  //Finished Aiming
+            Main.trigger(Main.EVT_STEP);     //Now Firing
+          }
+          break;    
         case '*':
-          pitchEn = false;
-          yawEn = false;
-          springEn = false;
-          pitch(0);
-          yaw(0);
-          spring(0);
-          //callback
-          break;
-        break;
-        
-          
+          edit = true;
+          break;         
         }
         break;
 

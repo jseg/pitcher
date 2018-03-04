@@ -24,11 +24,11 @@
 //Outputs
 
 //Sounds
-#define SOUND_ON            13     // the pin number for "ON"                    Sound    input PIn
-#define SOUND_CRACK         9     // the pin number for "READY"                 Sound    input PIn
-#define SOUND_GRUNT         10     // the pin number for "Load To Explode"       Sound    input PIn
-#define SOUND_FOUR          11     // the pin number for "GRUNT"                 Sound    input PIn
-#define SOUND_FIVE          12      // the pin number for "Crack"                 Sound    input PIn
+#define SOUND_ON            13     // the pin number for "ON"                   Sound    input PIn
+#define SOUND_CRACK         9      // the pin number for "Crack"                 Sound    input PIn
+#define SOUND_GRUNT         10     // the pin number for "GRUNT         "       Sound    input PIn
+#define SOUND_EXPLODE       11     // the pin number for "Load To Explode"                 Sound    input PIn
+#define SOUND_READY         12     // the pin number for "READY"                Sound    input PIn
 #define SOUND_SIX           8      // the pin number of the                      Sound 6  input PIn
 #define SOUND_SEVEN         7      // the pin number of the                      Sound 7  input PIn
 #define SOUND_EIGHT         6      // the pin number of the                      Sound 8  input PIn  
