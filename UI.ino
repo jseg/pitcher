@@ -3,6 +3,13 @@ void keypadEvent(KeypadEvent key){
     switch (keypad.getState()){
     case PRESSED:
         switch (key){
+         case '0':
+          if (Aiming.state()){
+            runPreset(lastPreset);     //function to move set points to a new preset
+            Serial.print(F("lastPreset: "));        //feedback
+            Serial.println(lastPreset);
+            }
+          break;
         case '1':
           if (Aiming.state()){
             runPreset(1);     //function to move set points to a new preset
@@ -69,12 +76,16 @@ void keypadEvent(KeypadEvent key){
         case 'a':
             //newBall.trigger(newBall.EVT_ON);
             break;
-        case 'b':
+        case 'b':loadAllDefaultPresets();
         case 'c': 
         case 'd':       
         case 'e':
+            break;
+        case 'f': loadDefaultPreset(currentPreset);
+                  
+            break;
         case 'g':
-          if(Aiming.state()){
+          if(Aiming.state() && (currentPreset)){  //If the state is 'Aiming' and the preset is not zero
             Aiming.trigger(Aiming.EVT_OFF);  //Finished Aiming
             Main.trigger(Main.EVT_STEP);     //Now Firing
           }
@@ -137,15 +148,16 @@ void keypadEvent(KeypadEvent key){
           nudge(0,0,-2);
           break;
         case 'a':
-        case 'b':
+        case 'b':loadAllDefaultPresets();
         case 'c': 
         case 'd':       
         case 'e':
             break;
-        case 'f': loadDefaultPresets();
+        case 'f': loadDefaultPreset(currentPreset);
+                  
             break;
         case 'g':
-          if(Aiming.state()){
+          if(Aiming.state() && (currentPreset)){
             Aiming.trigger(Aiming.EVT_OFF);
             Main.trigger(Main.EVT_STEP);
           }
@@ -217,7 +229,7 @@ void cmd_callback( int idx, int v, int up ) {
       runPreset(pin);     //function to move set points to a new preset
       return;
     case CMD_EEPROMSETUP:  //Comand to set-up eeprom on a new unit
-      loadDefaultPresets();
+      loadAllDefaultPresets();
       savePreset();
     case CMD_PITCH:
       pitch(pin);
