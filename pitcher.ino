@@ -293,7 +293,7 @@ void setup() {
     }); 
 
 
- printEncoders.begin(100)
+ printEncoders.begin(300)
             .onTimer(printPos)
             .repeat(-1);
             //.start();

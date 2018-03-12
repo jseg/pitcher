@@ -270,42 +270,44 @@ void cmd_callback( int idx, int v, int up ) {
 }
 
 void screen(int c){
+           lcd.clear();
+           delay(25);
   switch(c){
     case 0: printEncoders.stop();
-            lcd.clear();
             lcd.setCursor ( 0, 0 );
             lcd.print(F("Loading"));
-            lcd.setCursor ( 1, 0 );
+            lcd.setCursor ( 0, 1 );
             lcd.print(F("Ready in a moment..."));
             break;
     case 1: printEncoders.stop();
-            lcd.clear();
             lcd.setCursor ( 0, 0 );
             lcd.print(F("Choose a new pitch"));
-            lcd.setCursor ( 1, 0 );
+            lcd.setCursor ( 0, 1 );
             lcd.print(F("or press 0 to repeat"));
-            lcd.setCursor ( 2, 0 );
+            lcd.setCursor ( 0, 2 );
             lcd.print(F("the last pitch."));
-            lcd.setCursor ( 3, 0 );
+            lcd.setCursor ( 0, 3 );
             lcd.print(F("Speed: "));
             lcd.print(throwSpeed);
+            lcd.print(F(" MPH"));
             break;
     case 2: printEncoders.stop();
             lcd.clear();
             lcd.setCursor ( 0, 0 );
             lcd.print(F("Press Fire to throw"));
-            lcd.setCursor ( 1, 0 );
+            lcd.setCursor ( 0, 1 );
             lcd.print((PGM_P)pgm_read_word(&(code_table[whatPitch()])));
-            lcd.setCursor ( 2, 0 );
+            lcd.setCursor ( 0, 2 );
             lcd.print(F("Speed: "));
             lcd.print(throwSpeed);
-            lcd.setCursor ( 3, 0 );
+            lcd.print(F(" MPH"));
+            lcd.setCursor ( 0, 3 );
             lcd.print(F("Press Edit to adjust"));
             break;
-    case 3: lcd.clear();
+    case 3:
             lcd.setCursor ( 0, 0 );
             lcd.print(F("Use arrows to adjust"));
-            lcd.setCursor ( 1, 0 );
+            lcd.setCursor ( 0, 1 );
             lcd.print(F("P: "));
             lcd.print(EncPitch.read());
             lcd.print(F(" Y: "));
@@ -313,22 +315,21 @@ void screen(int c){
             lcd.print(F(" S: "));
             lcd.print(springPos);
             lcd.print(F("   "));
-            lcd.setCursor ( 2, 0 );
+            lcd.setCursor ( 0, 2 );
             lcd.print(F("Press Save, then"));
-            lcd.setCursor ( 3, 0 );
+            lcd.setCursor ( 0, 3 );
             lcd.print(F("press Edit to exit."));
             lcd.print(throwSpeed);
             printEncoders.start();
             break;
     case 4: printEncoders.stop();
-            lcd.clear();
             lcd.setCursor ( 0, 0 );
             lcd.print(F("Throwing:"));
-            lcd.setCursor ( 1, 0 );
+            lcd.setCursor ( 0, 1 );
             lcd.print((PGM_P)pgm_read_word(&(code_table[whatPitch()])));
-            lcd.setCursor ( 2, 0 );
+            lcd.setCursor ( 0, 2 );
             lcd.print(F("Simulated speed: "));
-            lcd.setCursor ( 3, 0 );
+            lcd.setCursor ( 0, 3 );
             lcd.print(throwSpeed);
             lcd.print(F(" MPH"));
             break;
@@ -337,7 +338,7 @@ void screen(int c){
 }
 
 void printPos(int idx, int v, int up ){
-  lcd.setCursor ( 1, 0 );
+  lcd.setCursor ( 0, 1 );
             lcd.print(F("P: "));
             lcd.print(EncPitch.read());
             lcd.print(F(" Y: "));
