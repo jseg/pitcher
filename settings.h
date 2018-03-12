@@ -41,3 +41,18 @@ int defaultPresets[NUM_PRESETS][NUM_MOTORS] =
    {10, 60, 150 }   //9
  };
 
+ const char gc1[] PROGMEM = "High and Away";
+const char gc2[] PROGMEM = "High";
+const char gc3[] PROGMEM = "High and Inside";
+const char gc4[] PROGMEM = "Outside";
+const char gc5[] PROGMEM = "Down the Middle";
+const char gc6[] PROGMEM = "Inside";
+const char gc7[] PROGMEM = "Low and Away ";
+const char gc8[] PROGMEM = "Low";
+const char gc9[] PROGMEM = "Low and Inside";
+
+PGM_P const code_table[] PROGMEM = {
+  gc1, gc2, gc3, gc4, gc5, gc6, gc7, gc8, gc9};
+
+ 
+

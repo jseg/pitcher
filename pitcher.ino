@@ -87,7 +87,8 @@ Atm_led newBall; //Controlls the "Latch" signal to call for a new ball from the 
 Atm_digital ballReady; //Microswitch to signal that a ball is ready to load
 Atm_digital loadSense; //Mircoswitch under the loading arm depressed and high at idle
 Atm_timer springLoad;
-int flightTime = 1000;
+int flightTime = 9;
+int throwSpeed = 90;
 
 Atm_step aimSq;
 
@@ -165,6 +166,7 @@ void setup() {
   loadSq.onStep(0 , [] (int idx, int v, int up){    //First step of the loadSq is to grab the carriage
     Serial.println(F("loadSq state 1"));
     if (Loading.state()){
+      screen(0);
       runHome();
     }
     });
@@ -183,12 +185,14 @@ void setup() {
     soundReady.trigger(soundReady.EVT_BLINK);
     Loading.trigger(Loading.EVT_OFF);                  //Finish Loading Sequence
     Main.trigger(Main.EVT_STEP);                       //Transistion to Aiming
+    screen(1);
   });
 
   fireSq.begin();
     fireSq.onStep(0 , moving, moving.EVT_START);    //Step to ensure the rig has stopped moving
     fireSq.onStep(1, [](int idx, int v, int up){    //Throw the ball!
       Serial.println(F("Fire in the hole!"));
+      screen(4);
       doorSol.trigger(doorSol.EVT_BLINK);
       });
 
@@ -291,8 +295,8 @@ void setup() {
 
  printEncoders.begin(100)
             .onTimer(printPos)
-            .repeat(-1)
-            .start();
+            .repeat(-1);
+            //.start();
   
 loadEEPromPresets();                                  //load presets from memory
 

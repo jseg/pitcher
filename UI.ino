@@ -66,21 +66,29 @@ void keypadEvent(KeypadEvent key){
             Serial.println(9);
             }
           break;
-        case 'a':flightTime=198;
+        case 'a':flightTime=189;
+                 throwSpeed = 60;
         break;
-        case 'b':flightTime=171;
+        case 'b':flightTime=162;
+                 throwSpeed = 65;
         break;
-        case 'c':flightTime=144; 
+        case 'c':flightTime=135;
+                 throwSpeed = 70;
         break;
-        case 'd':flightTime=117;    
-        break;   
-        case 'e':flightTime=90;
+        case 'd':flightTime=108;
+                 throwSpeed = 75;
         break;
-        case 'f':flightTime=63;
+        case 'e':flightTime=81;
+                 throwSpeed = 80;
         break;
-        case 'g':flightTime=36;
+        case 'f':flightTime=54;
+                 throwSpeed = 85;
         break;
-        case 'h':flightTime=9;
+        case 'g':flightTime=27;
+                 throwSpeed = 90;
+        break;
+        case 'h':flightTime=0;
+                 throwSpeed = 95;
         break;
         //callback
           break;
@@ -94,6 +102,7 @@ void keypadEvent(KeypadEvent key){
           break;    
         case '*':
           edit = true;
+          screen(3);
           break;   
         }
         break;
@@ -154,7 +163,8 @@ void keypadEvent(KeypadEvent key){
           }
           break;    
         case '*':
-          edit = true;
+          edit = false;
+          screen(2);
           break;         
         }
         break;
@@ -259,64 +269,82 @@ void cmd_callback( int idx, int v, int up ) {
   }
 }
 
-void printPos(int idx, int v, int up ){
-  static bool refresh = true; 
-  static int lastStep = 0;
-  static int lastPreset = 0;
-  static bool lastEdit = false;
-  if(Main.state()!=lastStep){    //Detect if the state has changed
-    lastStep=Main.state();
-    refresh = true;  
+void screen(int c){
+  switch(c){
+    case 0: printEncoders.stop();
+            lcd.clear();
+            lcd.setCursor ( 0, 0 );
+            lcd.print(F("Loading"));
+            lcd.setCursor ( 1, 0 );
+            lcd.print(F("Ready in a moment..."));
+            break;
+    case 1: printEncoders.stop();
+            lcd.clear();
+            lcd.setCursor ( 0, 0 );
+            lcd.print(F("Choose a new pitch"));
+            lcd.setCursor ( 1, 0 );
+            lcd.print(F("or press 0 to repeat"));
+            lcd.setCursor ( 2, 0 );
+            lcd.print(F("the last pitch."));
+            lcd.setCursor ( 3, 0 );
+            lcd.print(F("Speed: "));
+            lcd.print(throwSpeed);
+            break;
+    case 2: printEncoders.stop();
+            lcd.clear();
+            lcd.setCursor ( 0, 0 );
+            lcd.print(F("Press Fire to throw"));
+            lcd.setCursor ( 1, 0 );
+            lcd.print((PGM_P)pgm_read_word(&(code_table[whatPitch()])));
+            lcd.setCursor ( 2, 0 );
+            lcd.print(F("Speed: "));
+            lcd.print(throwSpeed);
+            lcd.setCursor ( 3, 0 );
+            lcd.print(F("Press Edit to adjust"));
+            break;
+    case 3: lcd.clear();
+            lcd.setCursor ( 0, 0 );
+            lcd.print(F("Use arrows to adjust"));
+            lcd.setCursor ( 1, 0 );
+            lcd.print(F("P: "));
+            lcd.print(EncPitch.read());
+            lcd.print(F(" Y: "));
+            lcd.print(EncYaw.read());
+            lcd.print(F(" S: "));
+            lcd.print(springPos);
+            lcd.print(F("   "));
+            lcd.setCursor ( 2, 0 );
+            lcd.print(F("Press Save, then"));
+            lcd.setCursor ( 3, 0 );
+            lcd.print(F("press Edit to exit."));
+            lcd.print(throwSpeed);
+            printEncoders.start();
+            break;
+    case 4: printEncoders.stop();
+            lcd.clear();
+            lcd.setCursor ( 0, 0 );
+            lcd.print(F("Throwing:"));
+            lcd.setCursor ( 1, 0 );
+            lcd.print((PGM_P)pgm_read_word(&(code_table[whatPitch()])));
+            lcd.setCursor ( 2, 0 );
+            lcd.print(F("Simulated speed: "));
+            lcd.setCursor ( 3, 0 );
+            lcd.print(throwSpeed);
+            lcd.print(F(" MPH"));
+            break;
+            
   }
-  if(edit!=lastEdit){        //Check if edit mode has changed
-    lastEdit = edit;
-    refresh = true;
-  }
-  if(currentPreset!=lastPreset){  //Check if the preset has changed
-    lastPreset = currentPreset;
-    refresh = true;
-  }
-  
-if(refresh){
-  lcd.clear();
-  if(Loading.state()){
-      lcd.setCursor ( 0, 0 );
-      lcd.print(F("Loading"));
-  }
-  else if(Aiming.state()){
-    if(edit){
-        lcd.setCursor ( 0, 0 );
-        lcd.print(F("Edit Preset: "));
-        lcd.print(currentPreset);
-    }
-    else{
-      lcd.print(F("Aim to Preset: "));
-      lcd.print(currentPreset);
-    }
-  }
-  else if(Firing.state()){
-    lcd.print(F("Firing"));
-  }
-  lcd.setCursor ( 0, 1 );  
-  lcd.print(F("Pitch Encoder: "));
-  lcd.setCursor ( 0, 2 );  
-  lcd.print(F("Yaw Encoder: "));
-  lcd.setCursor ( 0, 3 );  
-  lcd.print(F("Spring Encoder: "));
-  refresh = false;
 }
-    lcd.setCursor ( 17, 1 );
-    lcd.print("   ");
-     lcd.setCursor ( 17, 1 ); 
-    lcd.print(EncPitch.read());
-    lcd.setCursor ( 17, 2 );
-    lcd.print("   ");
-     lcd.setCursor ( 17, 2 );
-    lcd.print(EncYaw.read());
-    lcd.setCursor ( 17, 3 );
-    lcd.print("   ");
-     lcd.setCursor ( 17, 3 ); 
-    lcd.print(springPos);
+
+void printPos(int idx, int v, int up ){
+  lcd.setCursor ( 1, 0 );
+            lcd.print(F("P: "));
+            lcd.print(EncPitch.read());
+            lcd.print(F(" Y: "));
+            lcd.print(EncYaw.read());
+            lcd.print(F(" S: "));
+            lcd.print(springPos);
+            lcd.print(F("   "));
 }
 
 void help(){

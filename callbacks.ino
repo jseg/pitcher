@@ -61,6 +61,7 @@ void runPreset(int num){
   yawSet = presets[num][1];
   springSet = presets[num][2];
   currentPreset = num;
+  screen(2);
   //moving.trigger(moving.EVT_START);
   return;
 }
@@ -207,4 +208,12 @@ void encoderSpring(){
   springSet = springSet + s;
   presets[currentPreset][2] = springSet;
  }
+int whatPitch(){
+  if (currentPreset == 0){
+    return lastPreset;
+  }
+  else {
+    return currentPreset;
+  }
+}
 
