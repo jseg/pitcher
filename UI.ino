@@ -66,28 +66,28 @@ void keypadEvent(KeypadEvent key){
             Serial.println(9);
             }
           break;
-        case 'a':flightTime=189;
+        case 'a':flightTime=621;
                  throwSpeed = 60;
         break;
-        case 'b':flightTime=162;
+        case 'b':flightTime=594;
                  throwSpeed = 65;
         break;
-        case 'c':flightTime=135;
+        case 'c':flightTime=567;
                  throwSpeed = 70;
         break;
-        case 'd':flightTime=108;
+        case 'd':flightTime=540;
                  throwSpeed = 75;
         break;
-        case 'e':flightTime=81;
+        case 'e':flightTime=513;
                  throwSpeed = 80;
         break;
-        case 'f':flightTime=54;
+        case 'f':flightTime=486;
                  throwSpeed = 85;
         break;
-        case 'g':flightTime=27;
+        case 'g':flightTime=459;
                  throwSpeed = 90;
         break;
-        case 'h':flightTime=0;
+        case 'h':flightTime=432;
                  throwSpeed = 95;
         break;
         //callback

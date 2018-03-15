@@ -87,7 +87,7 @@ Atm_led newBall; //Controlls the "Latch" signal to call for a new ball from the 
 Atm_digital ballReady; //Microswitch to signal that a ball is ready to load
 Atm_digital loadSense; //Mircoswitch under the loading arm depressed and high at idle
 Atm_timer springLoad;
-int flightTime = 9;
+int flightTime = 459;
 int throwSpeed = 90;
 
 Atm_step aimSq;
@@ -104,7 +104,9 @@ Atm_led soundReady;
 Atm_led soundExplode;
 Atm_led soundGrunt;
 Atm_led soundCrack;
-
+Atm_timer gruntTime;
+Atm_timer crackTime;
+Atm_timer solTime;
 
 
 //Objects related to the Home Sequence
@@ -202,18 +204,30 @@ void setup() {
     doorSense.begin(DOOR_SENSE,20)                            //when loadSense is HIGH for 20ms:
            .onChange(LOW,[] ( int idx, int v, int up ) {      //turn off the lift motor and advance the LoadSq
               if (fireSq.state()==1){
-                soundGrunt.trigger(soundGrunt.EVT_BLINK);
-                Serial.println(millis());
-                automaton.delay(flightTime+SOUND_DELAY);
-                Serial.println(millis());
-                fireSol.trigger(fireSol.EVT_BLINK);
-                automaton.delay(SPEED-SOUND_DELAY);
-                Serial.println(millis());
-                soundCrack.trigger(soundCrack.EVT_BLINK);
+                  gruntTime.trigger(gruntTime.EVT_START);
+                  crackTime.interval(flightTime+OFFSETTIME);
+                  crackTime.trigger(crackTime.EVT_START);
+                  solTime.interval(flightTime+OFFSETTIME-TOSSTIME+SIGNALTIME);
+                  solTime.trigger(solTime.EVT_START);
+//                soundGrunt.trigger(soundGrunt.EVT_BLINK);
+//                Serial.println(millis());
+//                automaton.delay(flightTime+SOUND_DELAY);
+//                Serial.println(millis());
+//                fireSol.trigger(fireSol.EVT_BLINK);
+//                automaton.delay(SPEED-SOUND_DELAY);
+//                Serial.println(millis());
+//                soundCrack.trigger(soundCrack.EVT_BLINK);
               }
             });
     
-
+    gruntTime.begin(OFFSETTIME-SIGNALTIME)
+             .onTimer(soundGrunt, soundGrunt.EVT_BLINK);
+    crackTime.begin(459+OFFSETTIME)
+             .onTimer(soundCrack, soundCrack.EVT_BLINK);
+    solTime.begin(459+OFFSETTIME-TOSSTIME+SIGNALTIME)
+             .onTimer(fireSol, fireSol.EVT_BLINK);
+    
+    
     soundGrunt.begin(SOUND_GRUNT,true).blink(SIGNALTIME,0,1);
     soundCrack.begin(SOUND_CRACK,true).blink(SIGNALTIME,0,1);
     soundExplode.begin(SOUND_EXPLODE,true).blink(SIGNALTIME,0,1);
@@ -221,6 +235,7 @@ void setup() {
     
     fireSol.begin(FIRE_SOL,true).blink(500,250,1)
            .onFinish([](int idx, int v, int up){
+           automaton.delay(TOSSTIME);
            Firing.trigger(Firing.EVT_OFF);
            Main.trigger(Main.EVT_STEP);
            lastPreset = currentPreset; 
