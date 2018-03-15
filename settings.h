@@ -1,3 +1,7 @@
+//Sound Ajustments
+#define TOSSTIME 432    //Amount of time required for the ball to travel from the pocket to strike zone plane
+#define SIGNALTIME 130  //Amount of time require for the sound board to resond to a signal
+
 // declarations for motor control
 
 #define ID  0

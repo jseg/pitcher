@@ -106,6 +106,7 @@ Atm_led soundGrunt;
 Atm_led soundCrack;
 
 
+
 //Objects related to the Home Sequence
 //"Timer" state machine reference: https://github.com/tinkerspy/Automaton/wiki/The-timer-machine
 Atm_timer yawHome;   //controlls the amount of time the motors run during homing
@@ -212,10 +213,11 @@ void setup() {
               }
             });
     
-    soundGrunt.begin(SOUND_GRUNT,true).blink(130,0,1);
-    soundCrack.begin(SOUND_CRACK,true).blink(130,0,1);
-    soundExplode.begin(SOUND_EXPLODE,true).blink(130,0,1);
-    soundReady.begin(SOUND_READY,true).blink(130,0,1);
+
+    soundGrunt.begin(SOUND_GRUNT,true).blink(SIGNALTIME,0,1);
+    soundCrack.begin(SOUND_CRACK,true).blink(SIGNALTIME,0,1);
+    soundExplode.begin(SOUND_EXPLODE,true).blink(SIGNALTIME,0,1);
+    soundReady.begin(SOUND_READY,true).blink(SIGNALTIME,0,1);
     
     fireSol.begin(FIRE_SOL,true).blink(500,250,1)
            .onFinish([](int idx, int v, int up){

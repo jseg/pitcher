@@ -270,6 +270,7 @@ void cmd_callback( int idx, int v, int up ) {
 }
 
 void screen(int c){
+           char message[20];
            lcd.clear();
            delay(25);
   switch(c){
@@ -296,7 +297,8 @@ void screen(int c){
             lcd.setCursor ( 0, 0 );
             lcd.print(F("Press Fire to throw"));
             lcd.setCursor ( 0, 1 );
-            lcd.print((PGM_P)pgm_read_word(&(code_table[whatPitch()])));
+            strcpy_P(message, (PGM_P)pgm_read_word(&(code_table[whatPitch()])));
+            lcd.print(message);
             lcd.setCursor ( 0, 2 );
             lcd.print(F("Speed: "));
             lcd.print(throwSpeed);
@@ -326,7 +328,8 @@ void screen(int c){
             lcd.setCursor ( 0, 0 );
             lcd.print(F("Throwing:"));
             lcd.setCursor ( 0, 1 );
-            lcd.print((PGM_P)pgm_read_word(&(code_table[whatPitch()])));
+            strcpy_P(message, (PGM_P)pgm_read_word(&(code_table[whatPitch()])));
+            lcd.print(message);
             lcd.setCursor ( 0, 2 );
             lcd.print(F("Simulated speed: "));
             lcd.setCursor ( 0, 3 );
