@@ -127,7 +127,7 @@ void keypadEvent(KeypadEvent key){
     case PRESSED:
         switch (key){
         case '1':
-            nudge(0,0,2);
+            nudge(0,0,20);
             break;
           break;
         case '2':
@@ -149,7 +149,7 @@ void keypadEvent(KeypadEvent key){
           nudge(-1,0,0);
           break;
         case '9':
-          nudge(0,0,-2);
+          nudge(0,0,-20);
           break;
         case 'a':
         case 'b':
@@ -328,7 +328,7 @@ void screen(int c){
             lcd.print(F(" Y: "));
             lcd.print(EncYaw.read());
             lcd.print(F(" S: "));
-            lcd.print(springPos);
+            lcd.print(EncSpring.read());
             lcd.print(F("   "));
             lcd.setCursor ( 0, 2 );
             lcd.print(F("Press Save, then"));

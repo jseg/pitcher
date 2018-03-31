@@ -265,8 +265,9 @@ void setup() {
   springLoad.begin(4000)                                   //initialize timer at 3 secs
          .onTimer( [] ( int idx, int v, int up ) {      //lambda function that turns off motor
       spring(0);
-      springPos = 300;
-      springSet = 300;
+      EncSpring.write(3000);
+      //springPos = 300;
+      springSet = 3000;
       springEn = false;
       //loadSq.trigger(loadSq.EVT_STEP);                //Step loadSq S2->S3
     });
@@ -301,10 +302,11 @@ void setup() {
       pitchPos = EncPitch.read();                        //Sync control loop sample with new home
       pitchEn = true;                                   //Turn motor controll back  on
     });
-  springHome.begin(3005)                                   //initialize timer at 3 secs
+  springHome.begin(4000)                                   //initialize timer at 4 secs
          .onTimer( [] ( int idx, int v, int up ) {      //lambda function that turns off motor
       spring(0);
-      springPos = 286;
+      //springPos = 286;
+      EncSpring.write(3085);
       springSet = 0;
       springEn = true;
       if(Loading.state()){

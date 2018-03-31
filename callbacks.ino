@@ -45,6 +45,7 @@ void loadEEPromPresets(int idx, int v, int up){
          b++;
        }
    }
+ 
 }
 
 void savePreset(){
@@ -163,6 +164,8 @@ void encoders(){
 //    Serial.println(springPos);
 if (springPos != EncSpring.read()){
     springPos = EncSpring.read();
+      Serial.print(F("Spring Encoder: "));
+    Serial.println(EncSpring.read());
   }
   
 }
@@ -194,10 +197,10 @@ bool motors(){
   }
   if (springEn){
     //spring(scale(springSet, springPos, 1450));
-    spring(scale(springSet, EncSpring.read(), 1450));
+    spring(scale(springSet, EncSpring.read(), 1000));
   }
   //if((abs(pitchSet-EncPitch.read())<=1)&&(abs(yawSet-EncYaw.read())<=1)&&(abs(springSet-springPos)<=1)){
-  if((abs(pitchSet-EncPitch.read())<=1)&&(abs(yawSet-EncYaw.read())<=1)&&(abs(springSet-EncSpring.read())<=1)){
+  if((abs(pitchSet-EncPitch.read())<=1)&&(abs(yawSet-EncYaw.read())<=1)&&(abs(springSet-EncSpring.read())<=10)){
     return 1;
   }
   else{
