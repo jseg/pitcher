@@ -273,7 +273,7 @@ void setup() {
            .onChange(HIGH,ballReadyCB);                 // run callback that turns off newBall and turns on lift motor
                                                         //make lambda function: https://github.com/tinkerspy/Automaton/wiki/Introduction
   ballLift.begin(BALL_LOAD, true);                      //Starts in IDLE state, BALL_LOAD: LOW
-  loadSense.begin(LOADED,50)                            //when loadSense is HIGH for 50ms:
+  loadSense.begin(LOADED,100)                            //when loadSense is HIGH for 100ms:
            .onChange(HIGH,[] ( int idx, int v, int up ) {//turn off the lift motor and advance the LoadSq
             if (loadSq.state()==1){
               ballLift.trigger(ballLift.EVT_OFF);      
