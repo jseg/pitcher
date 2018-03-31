@@ -210,10 +210,10 @@ void encoderSpring(){
  }
 int whatPitch(){
   if (currentPreset == 0){
-    return lastPreset;
+    return lastPreset-1;
   }
   else {
-    return currentPreset;
+    return currentPreset-1;
   }
 }
 

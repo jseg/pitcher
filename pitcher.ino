@@ -259,7 +259,7 @@ void setup() {
       }
       });
    
-  springLoad.begin(3000)                                   //initialize timer at 3 secs
+  springLoad.begin(4000)                                   //initialize timer at 3 secs
          .onTimer( [] ( int idx, int v, int up ) {      //lambda function that turns off motor
       spring(0);
       springPos = 300;

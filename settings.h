@@ -1,7 +1,7 @@
 //Sound Ajustments
-#define TOSSTIME 432    //Amount of time required for the ball to travel from the pocket to strike zone plane
-#define SIGNALTIME 130  //Amount of time require for the sound board to resond to a signal
-#define OFFSETTIME 200  //Amount of time to shift the entire sequence to allow for faster pitches
+#define TOSSTIME 200    //Amount of time required for the ball to travel from the pocket to strike zone plane
+#define SIGNALTIME 230  //Amount of time require for the sound board to resond to a signal
+#define OFFSETTIME 400  //Amount of time to shift the entire sequence to allow for faster pitches
 
 // declarations for motor control
 
@@ -46,7 +46,7 @@ int defaultPresets[NUM_PRESETS][NUM_MOTORS] =
    {10, 60, 150 }   //9
  };
 
- const char gc1[] PROGMEM = "High and Away";
+const char gc1[] PROGMEM = "High and Away";
 const char gc2[] PROGMEM = "High";
 const char gc3[] PROGMEM = "High and Inside";
 const char gc4[] PROGMEM = "Outside";
