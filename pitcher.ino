@@ -50,7 +50,7 @@ int lastSpringPos;
 bool springDir = true;             //true for up, false for down
 Encoder EncPitch(PITCH_A, PITCH_B); //instantiate pitch encoder, uses INT0 and INT1
 Encoder EncYaw(YAW_A, YAW_B); ////instantiate pitch encoder, uses INT4 and INT5
-
+Encoder EncSpring(SPRING_A, SPRING_B);
 //Motor Control Values 
 bool pitchEn, yawEn, springEn;            //Enable booleans for PID loops
 int pitchSet = 0, yawSet = 0, springSet = 0;  //Motor Setpoints
@@ -67,6 +67,9 @@ Atm_step Main;
 Atm_bit Loading;
 Atm_bit Aiming;
 Atm_bit Firing;
+
+//State machine for Batter handedness:
+Atm_digital Hand;
 
 //Serial Command Line object 
 //Documentation:https://github.com/tinkerspy/Automaton/wiki/The-command-machine
@@ -86,7 +89,7 @@ Atm_led ballLift; //Controlls the ball lift arm motor
 Atm_led newBall; //Controlls the "Latch" signal to call for a new ball from the hopper
 Atm_digital ballReady; //Microswitch to signal that a ball is ready to load
 Atm_digital loadSense; //Mircoswitch under the loading arm depressed and high at idle
-Atm_timer springLoad;
+Atm_timer springLoad; //Timer to run the spring motor during loading
 int flightTime = 459;
 int throwSpeed = 90;
 
@@ -273,7 +276,7 @@ void setup() {
            .onChange(HIGH,ballReadyCB);                 // run callback that turns off newBall and turns on lift motor
                                                         //make lambda function: https://github.com/tinkerspy/Automaton/wiki/Introduction
   ballLift.begin(BALL_LOAD, true);                      //Starts in IDLE state, BALL_LOAD: LOW
-  loadSense.begin(LOADED,50)                            //when loadSense is HIGH for 50ms:
+  loadSense.begin(LOADED,100)                            //when loadSense is HIGH for 100ms:
            .onChange(HIGH,[] ( int idx, int v, int up ) {//turn off the lift motor and advance the LoadSq
             if (loadSq.state()==1){
               ballLift.trigger(ballLift.EVT_OFF);      
@@ -310,12 +313,14 @@ void setup() {
     }); 
 
 
- printEncoders.begin(300)
+printEncoders.begin(300)
             .onTimer(printPos)
             .repeat(-1);
             //.start();
-  
-loadEEPromPresets();                                  //load presets from memory
+
+Hand.begin(HAND,20, true, true)
+    .onChange(loadEEPromPresets); 
+loadEEPromPresets(0,0,0);                                  //load presets from memory
 
 automaton.run();
 Main.trigger(Main.EVT_STEP);
