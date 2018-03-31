@@ -68,6 +68,9 @@ Atm_bit Loading;
 Atm_bit Aiming;
 Atm_bit Firing;
 
+//State machine for Batter handedness:
+Atm_digital Hand;
+
 //Serial Command Line object 
 //Documentation:https://github.com/tinkerspy/Automaton/wiki/The-command-machine
 Atm_command cmd;  //This object is the primary way to control the machine during development     
@@ -86,7 +89,7 @@ Atm_led ballLift; //Controlls the ball lift arm motor
 Atm_led newBall; //Controlls the "Latch" signal to call for a new ball from the hopper
 Atm_digital ballReady; //Microswitch to signal that a ball is ready to load
 Atm_digital loadSense; //Mircoswitch under the loading arm depressed and high at idle
-Atm_timer springLoad;
+Atm_timer springLoad; //Timer to run the spring motor during loading
 int flightTime = 459;
 int throwSpeed = 90;
 
@@ -310,12 +313,14 @@ void setup() {
     }); 
 
 
- printEncoders.begin(300)
+printEncoders.begin(300)
             .onTimer(printPos)
             .repeat(-1);
             //.start();
-  
-loadEEPromPresets();                                  //load presets from memory
+
+Hand.begin(HAND,20, true, true)
+    .onChange(loadEEPromPresets); 
+loadEEPromPresets(0,0,0);                                  //load presets from memory
 
 automaton.run();
 Main.trigger(Main.EVT_STEP);

@@ -46,18 +46,61 @@ int defaultPresets[NUM_PRESETS][NUM_MOTORS] =
    {10, 60, 150 }   //9
  };
 
- const char gc1[] PROGMEM = "High and Away";
-const char gc2[] PROGMEM = "High";
-const char gc3[] PROGMEM = "High and Inside";
-const char gc4[] PROGMEM = "Outside";
-const char gc5[] PROGMEM = "Down the Middle";
-const char gc6[] PROGMEM = "Inside";
-const char gc7[] PROGMEM = "Low and Away ";
-const char gc8[] PROGMEM = "Low";
-const char gc9[] PROGMEM = "Low and Inside";
+ int rightPresets[NUM_PRESETS][NUM_MOTORS] =
+// {Pitch, Yaw, Spring}
+{
+   {0, 0, 0},    //0  Keys arranged like a phone keypad '1' top left
+   {60, 10, 200 },  //1
+   {60, 35, 200 },  //2
+   {60, 60, 200 },  //3
+   {35, 10, 170 },  //4
+   {35, 35, 170 },  //5
+   {35, 60, 170 },  //6
+   {10, 10, 150 },  //7
+   {10, 35, 150 },  //8
+   {10, 60, 150 }   //9
+ };
 
-PGM_P const code_table[] PROGMEM = {
-  gc1, gc2, gc3, gc4, gc5, gc6, gc7, gc8, gc9};
+ int leftPresets[NUM_PRESETS][NUM_MOTORS] =
+// {Pitch, Yaw, Spring}
+{
+   {0, 0, 0},    //0  Keys arranged like a phone keypad '1' top left
+   {60, 20, 200 },  //1
+   {60, 45, 200 },  //2
+   {60, 70, 200 },  //3
+   {35, 20, 170 },  //4
+   {35, 45, 170 },  //5
+   {35, 70, 170 },  //6
+   {10, 20, 150 },  //7
+   {10, 45, 150 },  //8
+   {10, 70, 150 }   //9
+ };
+
+const char rc1[] PROGMEM = "High and Away";
+const char rc2[] PROGMEM = "High";
+const char rc3[] PROGMEM = "High and Inside";
+const char rc4[] PROGMEM = "Outside";
+const char rc5[] PROGMEM = "Down the Middle";
+const char rc6[] PROGMEM = "Inside";
+const char rc7[] PROGMEM = "Low and Away ";
+const char rc8[] PROGMEM = "Low";
+const char rc9[] PROGMEM = "Low and Inside";
+
+PGM_P const right_table[] PROGMEM = {
+  rc1, rc2, rc3, rc4, rc5, rc6, rc7, rc8, rc9};
+
+const char lc1[] PROGMEM = "High and Inside";
+const char lc2[] PROGMEM = "High";
+const char lc3[] PROGMEM = "High and Away";
+const char lc4[] PROGMEM = "Inside";
+const char lc5[] PROGMEM = "Down the Middle";
+const char lc6[] PROGMEM = "Outside";
+const char lc7[] PROGMEM = "Low and Inside ";
+const char lc8[] PROGMEM = "Low";
+const char lc9[] PROGMEM = "Low and Away";
+
+PGM_P const left_table[] PROGMEM = {
+  lc1, lc2, lc3, lc4, lc5, lc6, lc7, lc8, lc9};
 
  
 

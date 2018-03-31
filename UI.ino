@@ -68,27 +68,35 @@ void keypadEvent(KeypadEvent key){
           break;
         case 'a':flightTime=621;
                  throwSpeed = 60;
+                 screen(2);
         break;
         case 'b':flightTime=594;
                  throwSpeed = 65;
+                 screen(2);
         break;
         case 'c':flightTime=567;
                  throwSpeed = 70;
+                 screen(2);
         break;
         case 'd':flightTime=540;
                  throwSpeed = 75;
+                 screen(2);
         break;
         case 'e':flightTime=513;
                  throwSpeed = 80;
+                 screen(2);
         break;
         case 'f':flightTime=486;
                  throwSpeed = 85;
+                 screen(2);
         break;
         case 'g':flightTime=459;
                  throwSpeed = 90;
+                 screen(2);
         break;
         case 'h':flightTime=432;
                  throwSpeed = 95;
+                 screen(2);
         break;
         //callback
           break;
@@ -297,7 +305,12 @@ void screen(int c){
             lcd.setCursor ( 0, 0 );
             lcd.print(F("Press Fire to throw"));
             lcd.setCursor ( 0, 1 );
-            strcpy_P(message, (PGM_P)pgm_read_word(&(code_table[whatPitch()])));
+            if(digitalRead(HAND)){
+            strcpy_P(message, (PGM_P)pgm_read_word(&(right_table[whatPitch()])));
+            }
+            else{
+            strcpy_P(message, (PGM_P)pgm_read_word(&(left_table[whatPitch()])));  
+            }
             lcd.print(message);
             lcd.setCursor ( 0, 2 );
             lcd.print(F("Speed: "));
@@ -321,14 +334,19 @@ void screen(int c){
             lcd.print(F("Press Save, then"));
             lcd.setCursor ( 0, 3 );
             lcd.print(F("press Edit to exit."));
-            lcd.print(throwSpeed);
+            //lcd.print(throwSpeed);
             printEncoders.start();
             break;
     case 4: printEncoders.stop();
             lcd.setCursor ( 0, 0 );
             lcd.print(F("Throwing:"));
             lcd.setCursor ( 0, 1 );
-            strcpy_P(message, (PGM_P)pgm_read_word(&(code_table[whatPitch()])));
+             if(digitalRead(HAND)){
+            strcpy_P(message, (PGM_P)pgm_read_word(&(right_table[whatPitch()])));
+            }
+            else{
+            strcpy_P(message, (PGM_P)pgm_read_word(&(left_table[whatPitch()])));  
+            }
             lcd.print(message);
             lcd.setCursor ( 0, 2 );
             lcd.print(F("Simulated speed: "));
@@ -347,7 +365,7 @@ void printPos(int idx, int v, int up ){
             lcd.print(F(" Y: "));
             lcd.print(EncYaw.read());
             lcd.print(F(" S: "));
-            lcd.print(springPos);
+            lcd.print(EncSpring.read());
             lcd.print(F("   "));
 }
 

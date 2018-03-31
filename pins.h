@@ -7,6 +7,7 @@
 
 #define BALL_IN             24      // Microswitch sensor pulled low N.O.
 #define LOADED              25      // Microswitch sensor pulled low N.O.
+#define HAND               27      //Switch to set the handedness of the batter
 
 #define PITCH_A            18      // the pin number of the Pitch Encoder A     Sensor
 #define PITCH_B            A7      // the pin number of the Pitch Encoder B     Sensor was 19

@@ -1,5 +1,26 @@
 
 void loadDefaultPresets(){
+ if(!digitalRead(HAND)){
+   Serial.println(F("Load Left Presets"));
+   for( int i = 0; i< NUM_PRESETS; i++)
+   {
+     for( int j = 0; j < NUM_MOTORS ;j++){
+       presets[i][j] = leftPresets[i][j];
+     }
+   }
+ }
+ else{
+  Serial.println(F("Load Right Presets"));
+   for( int i = 0; i< NUM_PRESETS; i++)
+   {
+     for( int j = 0; j < NUM_MOTORS ;j++){
+       presets[i][j] = rightPresets[i][j];
+     }
+   }
+ }
+}
+
+void loadFactoryPresets(){
  Serial.println("Load Default Presets");
  for( int i = 0; i< NUM_PRESETS; i++)
  {
@@ -9,23 +30,29 @@ void loadDefaultPresets(){
  }
 }
 
-void loadEEPromPresets(){
+void loadEEPromPresets(int idx, int v, int up){
   
  Serial.println("load EEProm Presets");
-  int b = 0;
-  for(int i = 0; i< NUM_PRESETS; i++)
- {
-     for(int j = 0; j < NUM_MOTORS ;j++){
-       int val = EEPROM.read(b);
-       presets[i][j] = val;
-       b++;
-     }
- }
+ int b = 0;
+ if(!digitalRead(HAND)){
+    b = 1000;
+    }
+    for(int i = 0; i< NUM_PRESETS; i++)
+   {
+       for(int j = 0; j < NUM_MOTORS ;j++){
+         int val = EEPROM.read(b);
+         presets[i][j] = val;
+         b++;
+       }
+   }
 }
 
 void savePreset(){
   Serial.println("save preset" );
  int b = 0;
+ if(!digitalRead(HAND)){
+    b = 1000;
+    }
     for(int i = 0; i< NUM_PRESETS; i++){
     
        for( int j = 0; j < NUM_MOTORS ;j++){
