@@ -50,7 +50,7 @@ int lastSpringPos;
 bool springDir = true;             //true for up, false for down
 Encoder EncPitch(PITCH_A, PITCH_B); //instantiate pitch encoder, uses INT0 and INT1
 Encoder EncYaw(YAW_A, YAW_B); ////instantiate pitch encoder, uses INT4 and INT5
-
+Encoder EncSpring(SPRING_A, SPRING_B);
 //Motor Control Values 
 bool pitchEn, yawEn, springEn;            //Enable booleans for PID loops
 int pitchSet = 0, yawSet = 0, springSet = 0;  //Motor Setpoints

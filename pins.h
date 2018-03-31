@@ -9,9 +9,11 @@
 #define LOADED              25      // Microswitch sensor pulled low N.O.
 
 #define PITCH_A            18      // the pin number of the Pitch Encoder A     Sensor
-#define PITCH_B            19      // the pin number of the Pitch Encoder B     Sensor
+#define PITCH_B            A7      // the pin number of the Pitch Encoder B     Sensor was 19
 #define YAW_A               2       // the pin number of the Yaw Encoder A       Sensor
-#define YAW_B               3       // the pin number of the Yaw Encoder B       Sensor
+#define YAW_B              A6       // the pin number of the Yaw Encoder B       Sensor was 3
+#define SPRING_A           19
+#define SPRING_B           A9
 //#define SPRING_COUNTER      18    //pseudo encoder
 #define SPRING_COUNTER      A8      //pseudo encoder
 #define DOOR_SENSE          26     // Safety door signal goes low when OK to Fire
