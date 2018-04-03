@@ -45,7 +45,6 @@ void loadEEPromPresets(int idx, int v, int up){
          b++;
        }
    }
- 
 }
 
 void savePreset(){
@@ -164,8 +163,6 @@ void encoders(){
 //    Serial.println(springPos);
 if (springPos != EncSpring.read()){
     springPos = EncSpring.read();
-      Serial.print(F("Spring Encoder: "));
-    Serial.println(EncSpring.read());
   }
   
 }
@@ -197,10 +194,10 @@ bool motors(){
   }
   if (springEn){
     //spring(scale(springSet, springPos, 1450));
-    spring(scale(springSet, EncSpring.read(), 1000));
+    spring(scale(springSet, EncSpring.read(), 1450));
   }
   //if((abs(pitchSet-EncPitch.read())<=1)&&(abs(yawSet-EncYaw.read())<=1)&&(abs(springSet-springPos)<=1)){
-  if((abs(pitchSet-EncPitch.read())<=1)&&(abs(yawSet-EncYaw.read())<=1)&&(abs(springSet-EncSpring.read())<=10)){
+  if((abs(pitchSet-EncPitch.read())<=1)&&(abs(yawSet-EncYaw.read())<=1)&&(abs(springSet-EncSpring.read())<=1)){
     return 1;
   }
   else{
@@ -244,10 +241,10 @@ void encoderSpring(){
  }
 int whatPitch(){
   if (currentPreset == 0){
-    return lastPreset-1;
+    return lastPreset;
   }
   else {
-    return currentPreset-1;
+    return currentPreset;
   }
 }
 

@@ -267,7 +267,7 @@ void setup() {
       spring(0);
       EncSpring.write(3000);
       //springPos = 300;
-      springSet = 3000;
+      springSet = 300;
       springEn = false;
       //loadSq.trigger(loadSq.EVT_STEP);                //Step loadSq S2->S3
     });
