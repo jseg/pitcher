@@ -306,7 +306,7 @@ void setup() {
          .onTimer( [] ( int idx, int v, int up ) {      //lambda function that turns off motor
       spring(0);
       //springPos = 286;
-      EncSpring.write(3085);
+      EncSpring.write(300);
       springSet = 0;
       springEn = true;
       if(Loading.state()){

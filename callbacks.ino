@@ -161,10 +161,10 @@ void encoders(){
 //     lastSpringPos = springPos;
 //    Serial.print(F("Spring Encoder: "));
 //    Serial.println(springPos);
-if (springPos != ((EncSpring.read()/10)){
-    springPos = ((EncSpring.read()/10);
+if (springPos != ((EncSpring.read()/10))){
+    springPos = ((EncSpring.read()/10));
     Serial.print(F("Spring Encoder: "));
-    Serial.println(((EncSpring.read()/10));
+    Serial.println(((EncSpring.read()/10)));
   }
   
 }
@@ -196,10 +196,10 @@ bool motors(){
   }
   if (springEn){
     //spring(scale(springSet, springPos, 1450));
-    spring(scale(springSet, ((EncSpring.read()/10), 1450));
+    spring(scale(springSet, ((EncSpring.read()/10)), 1450));
   }
   //if((abs(pitchSet-EncPitch.read())<=1)&&(abs(yawSet-EncYaw.read())<=1)&&(abs(springSet-springPos)<=1)){
-  if((abs(pitchSet-EncPitch.read())<=1)&&(abs(yawSet-EncYaw.read())<=1)&&(abs(springSet-((EncSpring.read()/10))<=1)){
+  if((abs(pitchSet-EncPitch.read())<=1)&&(abs(yawSet-EncYaw.read())<=1)&&(abs(springSet-((EncSpring.read()/10))<=1))){
     return 1;
   }
   else{
@@ -243,10 +243,10 @@ void encoderSpring(){
  }
 int whatPitch(){
   if (currentPreset == 0){
-    return lastPreset;
+    return lastPreset-1;
   }
   else {
-    return currentPreset;
+    return currentPreset-1;
   }
 }
 
