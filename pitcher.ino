@@ -1,5 +1,3 @@
-
-
 #define EI_NOTEXTERNAL
 #include <EnableInterrupt.h>
 #include <Wire.h>
