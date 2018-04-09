@@ -88,7 +88,7 @@ Atm_led newBall; //Controlls the "Latch" signal to call for a new ball from the 
 Atm_digital ballReady; //Microswitch to signal that a ball is ready to load
 Atm_digital loadSense; //Mircoswitch under the loading arm depressed and high at idle
 Atm_timer springLoad; //Timer to run the spring motor during loading
-int flightTime = 459;
+int flightTime = 459; //magic number to make the ball cross the plane of home plate at the right moment
 int throwSpeed = 90;
 
 Atm_step aimSq;
