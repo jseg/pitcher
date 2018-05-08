@@ -66,6 +66,13 @@ void keypadEvent(KeypadEvent key){
             Serial.println(9);
             }
           break;
+        case '0':if (Aiming.state()){
+            runPreset(lastPreset);     //function to move set points to a new preset
+            Serial.print(F("Pressed: "));        //feedback
+            Serial.println(9);
+            }
+          break;
+        
         case 'a':flightTime=621;
                  throwSpeed = 60;
                  screen(2);
@@ -102,10 +109,13 @@ void keypadEvent(KeypadEvent key){
           break;
         case '#':
           if(Aiming.state()){
-            soundExplode.trigger(soundExplode.EVT_BLINK);
-            automaton.delay(3000);
-            Aiming.trigger(Aiming.EVT_OFF);  //Finished Aiming
-            Main.trigger(Main.EVT_STEP);     //Now Firing
+            if(currentPreset != 0){
+              soundExplode.trigger(soundExplode.EVT_BLINK);
+              automaton.delay(3000);
+              Aiming.trigger(Aiming.EVT_OFF);  //Finished Aiming
+              Main.trigger(Main.EVT_STEP);     //Now Firing
+            }
+            //else play an "Error" sound
           }
           break;    
         case '*':
