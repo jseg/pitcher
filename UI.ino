@@ -120,7 +120,8 @@ void keypadEvent(KeypadEvent key){
           break;    
         case '*':
           edit = true;
-          screen(3);
+          mess = 3;
+          screen(mess);
           break;   
         }
         break;
@@ -129,9 +130,78 @@ void keypadEvent(KeypadEvent key){
         break;
 
     case HOLD:
+        if (key == '1' || '2' || '3' || '4' || '5' || '6' || '7' || '8' || '9') {
+            
+       rethrow = !rethrow;    // Blink the LED when holding the * key.
+       switch (key){
+        case '1':
+          if (Aiming.state()){
+            runPreset(1);     //function to move set points to a new preset
+            Serial.print(F("Pressed: "));        //feedback
+            Serial.println(1);
+            }
+          break;
+        case '2':
+          if (Aiming.state()){
+            runPreset(2);     //function to move set points to a new preset
+            Serial.print(F("Pressed: "));        //feedback
+            Serial.println(2);
+            }
+          break;
+        case '3':
+          if (Aiming.state()){
+            runPreset(3);     //function to move set points to a new preset
+            Serial.print(F("Pressed: "));        //feedback
+            Serial.println(3);
+            }
+          break;
+        case '4':
+          if (Aiming.state()){
+            runPreset(4);     //function to move set points to a new preset
+            Serial.print(F("Pressed: "));        //feedback
+            Serial.println(4);
+            }
+          break;
+        case '5':
+          if (Aiming.state()){
+            runPreset(5);     //function to move set points to a new preset
+            Serial.print(F("Pressed: "));        //feedback
+            Serial.println(5);
+            }
+          break;
+        case '6':
+          if (Aiming.state()){
+            runPreset(6);     //function to move set points to a new preset
+            Serial.print(F("Pressed: "));        //feedback
+            Serial.println(6);
+            }
+          break;
+        case '7':
+          if (Aiming.state()){
+            runPreset(7);     //function to move set points to a new preset
+            Serial.print(F("Pressed: "));        //feedback
+            Serial.println(7);
+            }
+          break;
+        case '8':
+          if (Aiming.state()){
+            runPreset(8);     //function to move set points to a new preset
+            Serial.print(F("Pressed: "));        //feedback
+            Serial.println(8);
+            }
+          break;
+        case '9':
+          if (Aiming.state()){
+            runPreset(9);     //function to move set points to a new preset
+            Serial.print(F("Pressed: "));        //feedback
+            Serial.println(9);
+            }
+          break;
+       }
+    }
         break;
     }
-  }
+ }
   else{
     switch (keypad.getState()){
     case PRESSED:
@@ -291,6 +361,10 @@ void screen(int c){
            char message[20];
            lcd.clear();
            delay(25);
+           if(rethrow){
+            lcd.setCursor ( 19, 3 );
+            lcd.print(F("*"));
+           }
   switch(c){
     case 0: printEncoders.stop();
             lcd.setCursor ( 0, 0 );

@@ -56,6 +56,8 @@ int pitchSpeed = 0, yawSpeed = 0, springSpeed = 0;
 bool atSetPoint = false;
 int currentPreset = 5;
 int lastPreset = 5;
+int mess = 0; //screen message
+bool rethrow = false;
 
 //State Machines
 //There are four global machine states "Loading", "Aiming", "Firing", and "Main". "Loading", 
@@ -161,7 +163,17 @@ void setup() {
   Main.onStep( 2, Firing, Firing.EVT_ON );  //Firing
   Loading.begin()
          .onChange(true, loadSq, loadSq.EVT_STEP); //Step loadSq S0->S1
-  Aiming.begin();
+  Aiming.begin()
+        .onChange(true, [] (int idx, int v, int up){    //First step of the loadSq is to grab the carriage
+            if((currentPreset != 0) && rethrow){
+              soundExplode.trigger(soundExplode.EVT_BLINK);
+              automaton.delay(3000);
+              Aiming.trigger(Aiming.EVT_OFF);  //Finished Aiming
+              Main.trigger(Main.EVT_STEP);     //Now Firing
+              }
+              //else play an "Error" sound
+            });
+ 
   Firing.begin()
         .onChange(true, fireSq, fireSq.EVT_STEP); //Step fireSq S0->S1
   
@@ -170,7 +182,8 @@ void setup() {
   loadSq.onStep(0 , [] (int idx, int v, int up){    //First step of the loadSq is to grab the carriage
     Serial.println(F("loadSq state 1"));
     if (Loading.state()){
-      screen(0);
+      mess = 0;
+      screen(mess);
       runHome();
     }
     });
@@ -189,14 +202,16 @@ void setup() {
     soundReady.trigger(soundReady.EVT_BLINK);
     Loading.trigger(Loading.EVT_OFF);                  //Finish Loading Sequence
     Main.trigger(Main.EVT_STEP);                       //Transistion to Aiming
-    screen(1);
+    mess = 1;
+    screen(mess);
   });
 
   fireSq.begin();
     fireSq.onStep(0 , moving, moving.EVT_START);    //Step to ensure the rig has stopped moving
     fireSq.onStep(1, [](int idx, int v, int up){    //Throw the ball!
       Serial.println(F("Fire in the hole!"));
-      screen(4);
+      mess = 4;
+      screen(mess);
       doorSol.trigger(doorSol.EVT_BLINK);
       });
 
