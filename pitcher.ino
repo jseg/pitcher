@@ -75,10 +75,9 @@ Atm_digital Hand;
 //Documentation:https://github.com/tinkerspy/Automaton/wiki/The-command-machine
 Atm_command cmd;  //This object is the primary way to control the machine during development     
 char cmd_buffer[80];   // input buffer
-enum { CMD_HIGH, CMD_LOW, CMD_READ, CMD_AREAD, CMD_AWRITE, //enum for switchcase in callback
-       CMD_MODE_INPUT, CMD_MODE_OUTPUT, CMD_MODE_PULLUP, CMD_LOAD, CMD_NUMKEY, CMD_EEPROMSETUP, CMD_PITCH, CMD_YAW, CMD_SPRING, CMD_HOME, CMD_PID, CMD_MOVE, CMD_STATE, CMD_SERIAL };
+enum {CMD_LOAD, CMD_PRESET, CMD_FIRE, CMD_EEPROMSETUP, CMD_PITCH, CMD_YAW, CMD_SPRING, CMD_HOME, CMD_MOVE, CMD_STATE, CMD_SERIAL };
 const char cmdlist[] = //must be in the same order as enum
-      "high low read aread awrite mode_input mode_output mode_pullup load numkey eepromsetup pitch yaw spring home pid move state serial"; 
+      "load preset fire eepromsetup pitch yaw spring home move state serial"; 
       
 //Objects related to the Ball Loading Sequence
 //"LED" state machine reference: https://github.com/tinkerspy/Automaton/wiki/The-led-machine
@@ -151,8 +150,9 @@ void setup() {
   
   //Serial UI set-up
   Serial.begin(115200); 
+  Serial1.begin(115200);
   help();
-  cmd.begin( Serial, cmd_buffer, sizeof( cmd_buffer ) ) //start the serial ui
+  cmd.begin( Serial1, cmd_buffer, sizeof( cmd_buffer ) ) //start the serial ui
       .list( cmdlist)                                   //assign command list from above
       .onCommand( cmd_callback );                       //assign callback, located in UI.ino
 

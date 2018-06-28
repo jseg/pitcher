@@ -271,36 +271,14 @@ void keypadEvent(KeypadEvent key){
 void cmd_callback( int idx, int v, int up ) {
   int pin = atoi( cmd.arg( 1 ) );
   switch ( v ) {
-    case CMD_HIGH: 
-      digitalWrite( pin, HIGH );
-      return;
-    case CMD_LOW:
-      digitalWrite( pin, LOW );
-      return;
-    case CMD_READ:
-      Serial.println( digitalRead( pin ) );
-      return;
-    case CMD_AREAD:
-      Serial.println( analogRead( pin ) );
-      return;
-    case CMD_AWRITE:
-      analogWrite( pin, atoi( cmd.arg( 2 ) ) );
-      return;
-    case CMD_MODE_INPUT:
-      pinMode( pin, INPUT );
-      return;
-    case CMD_MODE_OUTPUT:
-      pinMode( pin, OUTPUT );
-      return;
-    case CMD_MODE_PULLUP:
-      pinMode( pin, INPUT_PULLUP );
-      return;
     case CMD_LOAD:
       newBall.trigger(newBall.EVT_ON);  //trigger a new ball to be loaded
       //TODO: add logic to insure that the events cannot run if a ball is already loaded.
       return;
-    case CMD_NUMKEY:      
-      runPreset(pin);     //function to move set points to a new preset
+    case CMD_PRESET:
+      if (Aiming.state()){      
+        runPreset(pin);     //function to move set points to a new preset
+      }
       return;
     case CMD_EEPROMSETUP:  //Comand to set-up eeprom on a new unit
       loadDefaultPresets();
@@ -310,6 +288,18 @@ void cmd_callback( int idx, int v, int up ) {
       Serial.print(F("Pitch: "));
       Serial.println(pin);
       return;
+    case CMD_FIRE:
+      if(Aiming.state()){
+            if(currentPreset != 0){
+              soundExplode.trigger(soundExplode.EVT_BLINK);
+              automaton.delay(3000);
+              Aiming.trigger(Aiming.EVT_OFF);  //Finished Aiming
+              Main.trigger(Main.EVT_STEP);     //Now Firing
+            }
+            //else play an "Error" sound
+          }
+          break;
+      
     case CMD_YAW:
       yaw(pin);
       Serial.print(F("Yaw: "));
@@ -323,20 +313,6 @@ void cmd_callback( int idx, int v, int up ) {
     case CMD_HOME:
       runHome();
       return;
-    case CMD_PID:
-      if (pin == 1){
-        pitchEn = true;         //turn on motor control
-        yawEn = true;           //
-        springEn = true;
-        Serial.println(F("Motor Control On"));
-      }
-      else{
-        pitchEn = false;         //turn on motor control
-        yawEn = false;           //
-        springEn = false;
-        Serial.println(F("Motor Control Off"));
-      }
-     return;
     case CMD_MOVE:
       pitchSet = pin;
       yawSet = atoi(cmd.arg(2));
