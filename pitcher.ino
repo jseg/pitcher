@@ -150,9 +150,9 @@ void setup() {
   
   //Serial UI set-up
   Serial.begin(115200); 
-  Serial1.begin(115200);
+  Serial3.begin(115200);
   help();
-  cmd.begin( Serial1, cmd_buffer, sizeof( cmd_buffer ) ) //start the serial ui
+  cmd.begin( Serial3, cmd_buffer, sizeof( cmd_buffer ) ) //start the serial ui
       .list( cmdlist)                                   //assign command list from above
       .onCommand( cmd_callback );                       //assign callback, located in UI.ino
 
