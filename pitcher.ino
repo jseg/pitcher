@@ -1,3 +1,4 @@
+#include <Atm_servo.h>
 #define EI_NOTEXTERNAL
 #include <EnableInterrupt.h>
 #include <Wire.h>
@@ -100,6 +101,7 @@ Atm_timer moving;
 Atm_digital doorSense;
 Atm_led fireSol;
 Atm_led doorSol;
+Atm_servo doorServo;
 
 //Sound Objects
 Atm_led soundReady;
@@ -213,6 +215,7 @@ void setup() {
       mess = 4;
       screen(mess);
       doorSol.trigger(doorSol.EVT_BLINK);
+      doorServo.position(SERVO_OPEN);
       });
 
     doorSol.begin(SAFETY_DOOR,true).blink(2000,250,1);
@@ -252,6 +255,7 @@ void setup() {
     fireSol.begin(FIRE_SOL,true).blink(500,250,1)
            .onFinish([](int idx, int v, int up){
            automaton.delay(TOSSTIME);
+           doorServo.position(SERVO_CLOSED);
            Firing.trigger(Firing.EVT_OFF);
            Main.trigger(Main.EVT_STEP);
            lastPreset = currentPreset; 
@@ -326,7 +330,8 @@ void setup() {
       loadSq.trigger(loadSq.EVT_STEP);                  //Step loadSq S1->S2
       }
     }); 
-
+doorServo.begin(4)
+     .step(180,0);
 
 printEncoders.begin(300)
             .onTimer(printPos)

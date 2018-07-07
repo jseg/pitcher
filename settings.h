@@ -15,6 +15,10 @@
 #define YAW_MIN 900    //minimum output for yaw pid controller
 #define SOUND_DELAY 400
 
+// Servo door adjustments
+#define SERVO_OPEN 40
+#define SERVO_CLOSED 0
+
 /////////////////////////////////
 //Global Variables
 /////////////////////////////////
