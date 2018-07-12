@@ -242,7 +242,7 @@ void keypadEvent(KeypadEvent key){
         case 'g':
           break;
         case 'h': 
-            savePreset();
+            savePreset(digitalRead(HAND));
           break;
         case '#':
           if(Aiming.state()){
@@ -274,17 +274,24 @@ void cmd_callback( int idx, int v, int up ) {
     case CMD_LOAD:
       newBall.trigger(newBall.EVT_ON);  //trigger a new ball to be loaded
       //TODO: add logic to insure that the events cannot run if a ball is already loaded.
-      break;
+      return;
     case CMD_PRESET:
       if (Aiming.state()){      
         runPreset(pin);     //function to move set points to a new preset
       }
-      break;
+      return;
+    case CMD_EEPROMSETUP:  //Comand to set-up eeprom on a new unit
+      loadDefaultPresets();
+      savePreset(0);
+      savePreset(1);
+    case CMD_PITCH:
+      pitch(pin);
+      Serial.print(F("Pitch: "));
+      Serial.println(pin);
+      return;
     case CMD_FIRE:
-      Serial.println("Fire in the hole!");
       if(Aiming.state()){
-           if(currentPreset != 0){
-          
+            if(currentPreset != 0){
               soundExplode.trigger(soundExplode.EVT_BLINK);
               automaton.delay(3000);
               Aiming.trigger(Aiming.EVT_OFF);  //Finished Aiming
@@ -293,14 +300,6 @@ void cmd_callback( int idx, int v, int up ) {
             //else play an "Error" sound
           }
           break;
-    case CMD_EEPROMSETUP:  //Comand to set-up eeprom on a new unit
-      loadDefaultPresets();
-      savePreset();
-    case CMD_PITCH:
-      pitch(pin);
-      Serial.print(F("Pitch: "));
-      Serial.println(pin);
-      return;
       
     case CMD_YAW:
       yaw(pin);

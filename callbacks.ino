@@ -31,11 +31,11 @@ void loadFactoryPresets(){
 }
 
 void loadEEPromPresets(int idx, int v, int up){
-  
+ if(edit){savePreset(!(digitalRead(HAND)));} //save previous hand settings
  Serial.println("load EEProm Presets");
- int b = 0;
+ int b = 0; //right
  if(!digitalRead(HAND)){
-    b = 1000;
+    b = 1000;           //left
     }
     for(int i = 0; i< NUM_PRESETS; i++)
    {
@@ -47,14 +47,14 @@ void loadEEPromPresets(int idx, int v, int up){
    }
  pitchSet = presets[currentPreset][0];  //Update motor setpoints
  yawSet = presets[currentPreset][1];
- springSet = presets[currentPreset][2];
+ springSet = presets[currentPreset][0];
  screen(mess);
 }
 
-void savePreset(){
+void savePreset(int side){ // 1 right 0 left
   Serial.println("save preset" );
  int b = 0;
- if(!digitalRead(HAND)){
+ if(!side){
     b = 1000;
     }
     for(int i = 0; i< NUM_PRESETS; i++){
@@ -92,8 +92,7 @@ void runPreset(int num){
   yawSet = presets[num][1];
   springSet = presets[num][2];
   currentPreset = num;
-  mess = 2;
-  screen(mess);
+  screen(2);
   //moving.trigger(moving.EVT_START);
   return;
 }
