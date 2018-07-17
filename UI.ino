@@ -422,11 +422,11 @@ void screen(int c){
 void printPos(int idx, int v, int up ){
   lcd.setCursor ( 0, 1 );
             lcd.print(F("P: "));
-            lcd.print(EncPitch.read());
+            lcd.print(map(EncPitch.read(),PITCHMIN,PITCHMAX,0,100));
             lcd.print(F(" Y: "));
-            lcd.print(EncYaw.read());
+            lcd.print(map(EncYaw.read(),YAWMIN,YAWMAX,0,100));
             lcd.print(F(" S: "));
-            lcd.print((EncSpring.read()/10));
+            lcd.print(map((EncSpring.read()/10),SPRINGMIN,SPRINGMAX,0,100));
             lcd.print(F("   "));
 }
 

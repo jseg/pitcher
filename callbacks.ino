@@ -46,14 +46,10 @@ void loadEEPromPresets(int idx, int v, int up){
          b++;
        }
    }
- pitchSet = presets[currentPreset][0];  //Update motor setpoints
- yawSet = presets[currentPreset][1];
- springSet = presets[currentPreset][2];
-<<<<<<< HEAD
- screen(mess);
-=======
+ pitchSet = map(presets[currentPreset][0],0,100,PITCHMIN,PITCHMAX);  //Update motor setpoints
+ yawSet = map(presets[currentPreset][1],0,100,YAWMIN,YAWMAX);
+ springSet =map(presets[currentPreset][2],0,100,SPRINGMIN,SPRINGMAX);
  //screen(mess);
->>>>>>> a75bc6303a0901e558ccd1822516b446cd0f4bb7
 }
 
 void savePreset(int side){ // 1 right 0 left
