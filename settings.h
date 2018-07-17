@@ -11,8 +11,12 @@
 #define SPEED  450  
 #define NUM_MOTORS  3
 #define NUM_PRESETS  10
-#define PITCH_MIN 1750 //minimum output for pitch pid controller
-#define YAW_MIN 900    //minimum output for yaw pid controller
+#define PITCHMIN 20
+#define PITCHMAX 73
+#define YAWMIN 4
+#define YAWMAX 76
+#define SPRINGMIN 295
+#define SPRINGMAX 200
 #define SOUND_DELAY 400
 
 // Servo door adjustments
