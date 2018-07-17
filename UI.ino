@@ -385,11 +385,11 @@ void screen(int c){
             lcd.print(F("Use arrows to adjust"));
             lcd.setCursor ( 0, 1 );
             lcd.print(F("P: "));
-            lcd.print(EncPitch.read());
+            lcd.print(presets[currentPreset][0]);
             lcd.print(F(" Y: "));
-            lcd.print(EncYaw.read());
+            lcd.print(presets[currentPreset][1]);
             lcd.print(F(" S: "));
-            lcd.print(springPos);
+            lcd.print(presets[currentPreset][2]);
             lcd.print(F("   "));
             lcd.setCursor ( 0, 2 );
             lcd.print(F("Press Save, then"));

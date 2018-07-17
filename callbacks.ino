@@ -1,4 +1,5 @@
 
+
 void loadDefaultPresets(){
  if(!digitalRead(HAND)){
    Serial.println(F("Load Left Presets"));
@@ -48,7 +49,11 @@ void loadEEPromPresets(int idx, int v, int up){
  pitchSet = presets[currentPreset][0];  //Update motor setpoints
  yawSet = presets[currentPreset][1];
  springSet = presets[currentPreset][2];
+<<<<<<< HEAD
  screen(mess);
+=======
+ //screen(mess);
+>>>>>>> a75bc6303a0901e558ccd1822516b446cd0f4bb7
 }
 
 void savePreset(int side){ // 1 right 0 left
@@ -88,9 +93,9 @@ void runPreset(int num){
   if(!springEn){
     springEn = true;
   }
-  pitchSet = presets[num][0];
-  yawSet = presets[num][1];
-  springSet = presets[num][2];
+  pitchSet = map(constrain(presets[num][0],0,100),0,100,PITCHMIN,PITCHMAX);
+  yawSet = map(constrain(presets[num][1],0,100),0,100,YAWMIN,YAWMAX);
+  springSet = map(constrain(presets[num][2],0,100),0,100,SPRINGMIN,SPRINGMAX);
   currentPreset = num;
   screen(2);
   //moving.trigger(moving.EVT_START);
@@ -238,13 +243,14 @@ void encoderSpring(){
  }
 
  void nudge(int p, int y, int s){
-  pitchSet = pitchSet + p;
-  presets[currentPreset][0] = pitchSet;
-  yawSet = yawSet + y;
-  presets[currentPreset][1] = yawSet;
-  springSet = springSet + s;
-  presets[currentPreset][2] = springSet;
+  presets[currentPreset][0] = constrain(presets[currentPreset][0]+p,0,100);
+  presets[currentPreset][1] = constrain(presets[currentPreset][1]+y,0,100);
+  presets[currentPreset][2] = constrain(presets[currentPreset][2]+s,0,100);
+  pitchSet = map(constrain(presets[currentPreset][0],0,100),0,100,PITCHMIN,PITCHMAX);
+  yawSet = map(constrain(presets[currentPreset][1],0,100),0,100,YAWMIN,YAWMAX);
+  springSet = map(constrain(presets[currentPreset][2],0,100),0,100,SPRINGMIN,SPRINGMAX); 
  }
+ 
 int whatPitch(){
   if (currentPreset == 0){
     return lastPreset-1;
