@@ -12,7 +12,6 @@
 #include <Automaton.h>    //version 1.0.1
 #include "pins.h"
 #include "settings.h"
-
 //////////////////////////////////////
 //Program Objects And Global Variables
 //////////////////////////////////////
