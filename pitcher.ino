@@ -57,6 +57,11 @@ bool atSetPoint = false;
 int currentPreset = 5;
 int lastPreset = 5;
 int mess = 0; //screen message
+//bool rethrow = false;
+int flightTime = 459; //magic number to make the ball cross the plane of home plate at the right moment
+int throwSpeed = 90;
+int repeatThrow = 0;
+int batterHand = 1; //0 = left 1 = right
 bool rethrow = false;
 
 //State Machines
@@ -75,9 +80,9 @@ Atm_digital Hand;
 //Documentation:https://github.com/tinkerspy/Automaton/wiki/The-command-machine
 Atm_command cmd;  //This object is the primary way to control the machine during development     
 char cmd_buffer[80];   // input buffer
-enum {CMD_LOAD, CMD_PRESET, CMD_FIRE, CMD_EEPROMSETUP, CMD_PITCH, CMD_YAW, CMD_SPRING, CMD_HOME, CMD_MOVE, CMD_STATE, CMD_SERIAL };
+enum {CMD_LOAD, CMD_PRESET, CMD_FIRE, CMD_HAND, CMD_EEPROMSETUP, CMD_PITCH, CMD_YAW, CMD_SPRING, CMD_HOME, CMD_MOVE, CMD_STATE, CMD_SERIAL };
 const char cmdlist[] = //must be in the same order as enum
-      "load preset fire eepromsetup pitch yaw spring home move state serial"; 
+      "load preset fire hand eepromsetup pitch yaw spring home move state serial"; 
       
 //Objects related to the Ball Loading Sequence
 //"LED" state machine reference: https://github.com/tinkerspy/Automaton/wiki/The-led-machine
@@ -89,8 +94,7 @@ Atm_led newBall; //Controlls the "Latch" signal to call for a new ball from the 
 Atm_digital ballReady; //Microswitch to signal that a ball is ready to load
 Atm_digital loadSense; //Mircoswitch under the loading arm depressed and high at idle
 Atm_timer springLoad; //Timer to run the spring motor during loading
-int flightTime = 459; //magic number to make the ball cross the plane of home plate at the right moment
-int throwSpeed = 90;
+
 
 Atm_step aimSq;
 
@@ -182,6 +186,7 @@ void setup() {
   loadSq.begin();
   loadSq.onStep(0 , [] (int idx, int v, int up){    //First step of the loadSq is to grab the carriage
     Serial.println(F("loadSq state 1"));
+    Serial3.println(F("loading"));
     if (Loading.state()){
       mess = 0;
       screen(mess);
@@ -205,12 +210,14 @@ void setup() {
     Main.trigger(Main.EVT_STEP);                       //Transistion to Aiming
     mess = 1;
     screen(mess);
+    Serial3.print(F("aiming"));
   });
 
   fireSq.begin();
     fireSq.onStep(0 , moving, moving.EVT_START);    //Step to ensure the rig has stopped moving
     fireSq.onStep(1, [](int idx, int v, int up){    //Throw the ball!
       Serial.println(F("Fire in the hole!"));
+      Serial3.println(F("firing"));
       mess = 4;
       screen(mess);
       doorSol.trigger(doorSol.EVT_BLINK);
@@ -337,8 +344,8 @@ printEncoders.begin(300)
             .repeat(-1);
             //.start();
 
-Hand.begin(HAND,20, true, true)
-    .onChange(loadEEPromPresets); 
+//Hand.begin(HAND,20, true, true)
+//    .onChange(loadEEPromPresets); 
 loadEEPromPresets(0,0,0);                                  //load presets from memory
 
 automaton.run();

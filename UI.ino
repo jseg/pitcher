@@ -270,6 +270,8 @@ void keypadEvent(KeypadEvent key){
 
 void cmd_callback( int idx, int v, int up ) {
   int pin = atoi( cmd.arg( 1 ) );
+  int arg2 = atoi( cmd.arg(2));
+  int arg3 = atoi( cmd.arg(3));
   switch ( v ) {
     case CMD_LOAD:
       newBall.trigger(newBall.EVT_ON);  //trigger a new ball to be loaded
@@ -280,26 +282,36 @@ void cmd_callback( int idx, int v, int up ) {
         runPreset(pin);     //function to move set points to a new preset
       }
       return;
+    case CMD_FIRE:
+      throwSpeed = arg3;
+      flightTime = timeOfFlight(throwSpeed);
+      rethrow = (bool)arg2;
+      if(pin){
+        if(Aiming.state()){
+              if(currentPreset != 0 && atSetPoint){
+                soundExplode.trigger(soundExplode.EVT_BLINK);
+                automaton.delay(3000);
+                Aiming.trigger(Aiming.EVT_OFF);  //Finished Aiming
+                Main.trigger(Main.EVT_STEP);     //Now Firing
+              }
+              //else play an "Error" sound
+            }
+        }
+          break;
+    case CMD_HAND:
+      batterHand = pin;
+      loadEEPromPresets(0,0,0);
+      break;
     case CMD_EEPROMSETUP:  //Comand to set-up eeprom on a new unit
       loadDefaultPresets();
       savePreset(0);
       savePreset(1);
+      break;
     case CMD_PITCH:
       pitch(pin);
       Serial.print(F("Pitch: "));
       Serial.println(pin);
       return;
-    case CMD_FIRE:
-      if(Aiming.state()){
-            if(currentPreset != 0){
-              soundExplode.trigger(soundExplode.EVT_BLINK);
-              automaton.delay(3000);
-              Aiming.trigger(Aiming.EVT_OFF);  //Finished Aiming
-              Main.trigger(Main.EVT_STEP);     //Now Firing
-            }
-            //else play an "Error" sound
-          }
-          break;
       
     case CMD_YAW:
       yaw(pin);

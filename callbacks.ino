@@ -32,10 +32,10 @@ void loadFactoryPresets(){
 }
 
 void loadEEPromPresets(int idx, int v, int up){
- if(edit){savePreset(!(digitalRead(HAND)));} //save previous hand settings
+ if(edit){savePreset(!(batterHand));} //save previous hand settings
  Serial.println("load EEProm Presets");
  int b = 0; //right
- if(!digitalRead(HAND)){
+ if(!(batterHand)){
     b = 1000;           //left
     }
     for(int i = 0; i< NUM_PRESETS; i++)
@@ -254,5 +254,9 @@ int whatPitch(){
   else {
     return currentPreset-1;
   }
+}
+
+int timeOfFlight(int s){
+  return (int)((-5.4*s)+945);
 }
 
