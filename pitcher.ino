@@ -210,8 +210,9 @@ void setup() {
     mess = 1;
     screen(mess);
     Serial3.print(F("aiming"));
-    if (rethow){
+    if (rethrow){
       currentPreset = lastPreset;
+      runPreset(currentPreset);
       //automaton.delay(3000);
     }
     else{
