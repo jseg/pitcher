@@ -180,13 +180,13 @@ int scale(int setPt, int EncPos, int minSpeed){
     if (error > 20){
       return(4096);
     }
-    if ((error <= 20) && (error > 1)){
+    if ((error <= 20) && (error > 2)){
       return map(error,1,80,minSpeed,4096);
     }
     if (error < -20){
       return(-4096);
     }
-    if ((error >= -20) && (error < -0)){
+    if ((error >= -20) && (error < -2)){
       return map(error,-80,-1,-4096,(-1 * minSpeed));
     }
     else return 0;
@@ -204,7 +204,7 @@ bool motors(){
     spring(scale(springSet, ((EncSpring.read()/10)), 1450));
   }
   //if((abs(pitchSet-EncPitch.read())<=1)&&(abs(yawSet-EncYaw.read())<=1)&&(abs(springSet-springPos)<=1)){
-  if((abs(pitchSet-EncPitch.read())<=1)&&(abs(yawSet-EncYaw.read())<=1)&&(abs(springSet-((EncSpring.read()/10))<=1))){
+  if((abs(pitchSet-EncPitch.read())<=2)&&(abs(yawSet-EncYaw.read())<=2)&&(abs(springSet-((EncSpring.read()/10))<=2))){
     return 1; //at set point
   }
   else{
