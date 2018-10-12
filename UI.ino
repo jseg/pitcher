@@ -286,6 +286,8 @@ void cmd_callback( int idx, int v, int up ) {
       throwSpeed = arg3;
       flightTime = timeOfFlight(throwSpeed);
       rethrow = (bool)arg2;
+      Serial.print("Rethrow: ");
+      Serial.println(rethrow);
       if(pin){
         if(Aiming.state()){
               if(currentPreset != 0 && atSetPoint){
