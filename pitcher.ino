@@ -205,19 +205,19 @@ void setup() {
   loadSq.onStep(2, [] ( int idx, int v, int up ) {     //Return to previous preset
     printStates();
     soundReady.trigger(soundReady.EVT_BLINK);
+     if (rethrow){
+      currentPreset = lastPreset;
+      runPreset(currentPreset);
+      automaton.delay(3000);
+    }
+    else{
+      currentPreset = 0;
+    }
     Loading.trigger(Loading.EVT_OFF);                  //Finish Loading Sequence
     Main.trigger(Main.EVT_STEP);                       //Transistion to Aiming
     mess = 1;
     screen(mess);
     Serial3.print(F("aiming"));
-    if (rethrow){
-      currentPreset = lastPreset;
-      runPreset(currentPreset);
-      //automaton.delay(3000);
-    }
-    else{
-      currentPreset = 0;
-    }
   });
 
   fireSq.begin();
