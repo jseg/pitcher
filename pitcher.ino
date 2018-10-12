@@ -204,13 +204,13 @@ void setup() {
   //loadSq.onStep(2, newBall, newBall.EVT_ON);           //Call for a new ball
   loadSq.onStep(2, [] ( int idx, int v, int up ) {     //Return to previous preset
     printStates();
-    soundReady.trigger(soundReady.EVT_BLINK);
      if (rethrow){
       currentPreset = lastPreset;
       runPreset(currentPreset);
-      automaton.delay(3000);
+      motors();
     }
     else{
+      soundReady.trigger(soundReady.EVT_BLINK);
       currentPreset = 0;
     }
     Loading.trigger(Loading.EVT_OFF);                  //Finish Loading Sequence
