@@ -63,6 +63,7 @@ int throwSpeed = 90;
 int repeatThrow = 0;
 int batterHand = 1; //0 = left 1 = right
 bool rethrow = false;
+bool keyed = false; //flag to track wether a preset has been keyed in
 
 //State Machines
 //There are four global machine states "Loading", "Aiming", "Firing", and "Main". "Loading", 
@@ -220,6 +221,7 @@ void setup() {
     Serial3.print(F("aiming"));
   });
 
+
   fireSq.begin();
     fireSq.onStep(0 , moving, moving.EVT_START);    //Step to ensure the rig has stopped moving
     fireSq.onStep(1, [](int idx, int v, int up){    //Throw the ball!
@@ -370,5 +372,9 @@ void loop() {
   encoders();                                           //passes volatile encoder states to globals for use in control loop
   automaton.run();                                      //run the state machines
   feedback();
+  if((keyed==true) && (atSetPoint==true)){
+    keyed = false;
+    Serial.println("aimed");
+  }
   atSetPoint = motors();
 }

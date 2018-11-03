@@ -280,6 +280,8 @@ void cmd_callback( int idx, int v, int up ) {
     case CMD_PRESET:
       if (Aiming.state()){      
         runPreset(pin);     //function to move set points to a new preset
+        atSetPoint = false;
+        keyed = true;
       }
       return;
     case CMD_FIRE:

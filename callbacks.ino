@@ -205,10 +205,10 @@ bool motors(){
   }
   //if((abs(pitchSet-EncPitch.read())<=1)&&(abs(yawSet-EncYaw.read())<=1)&&(abs(springSet-springPos)<=1)){
   if((abs(pitchSet-EncPitch.read())<=2)&&(abs(yawSet-EncYaw.read())<=2)&&(abs(springSet-((EncSpring.read()/10))<=2))){
-    return 1; //at set point
+    return true; //at set point
   }
   else{
-    return 0; //not at set point
+    return false; //not at set point
   }
 }
 
