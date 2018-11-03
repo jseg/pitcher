@@ -81,6 +81,8 @@ Atm_digital Hand;
 //Documentation:https://github.com/tinkerspy/Automaton/wiki/The-command-machine
 Atm_command cmd;  //This object is the primary way to control the machine during development     
 char cmd_buffer[80];   // input buffer
+Atm_command cmd1;  //This object is the primary way to control the machine during development     
+char cmd1_buffer[80];   // input buffer
 enum {CMD_LOAD, CMD_PRESET, CMD_FIRE, CMD_HAND, CMD_EEPROMSETUP, CMD_PITCH, CMD_YAW, CMD_SPRING, CMD_HOME, CMD_MOVE, CMD_STATE, CMD_SERIAL };
 const char cmdlist[] = //must be in the same order as enum
       "load preset fire hand eepromsetup pitch yaw spring home move state serial"; 
@@ -161,6 +163,11 @@ void setup() {
   cmd.begin( Serial3, cmd_buffer, sizeof( cmd_buffer ) ) //start the serial ui
       .list( cmdlist)                                   //assign command list from above
       .onCommand( cmd_callback );                       //assign callback, located in UI.ino
+
+cmd1.begin( Serial, cmd1_buffer, sizeof( cmd1_buffer ) ) //start the serial ui
+      .list( cmdlist)                                   //assign command list from above
+      .onCommand( cmd_callback );                       //assign callback, located in UI.ino
+
 
   //Main Sequence Set-up
   Main.begin();
