@@ -22,13 +22,22 @@ void loadDefaultPresets(){
 }
 
 void loadFactoryPresets(){
- Serial.println("Load Default Presets");
+ Serial.println("Loading Factory Default Presets");
  for( int i = 0; i< NUM_PRESETS; i++)
  {
    for( int j = 0; j < NUM_MOTORS ;j++){
-     presets[i][j] = defaultPresets[i][j];
+     presets[i][j] = rightPresets[i][j];
    }
  }
+ savePreset(1);
+ for( int i = 0; i< NUM_PRESETS; i++)
+ {
+   for( int j = 0; j < NUM_MOTORS ;j++){
+     presets[i][j] = leftPresets[i][j];
+   }
+ }
+ savePreset(0);
+
 }
 
 void loadEEPromPresets(int idx, int v, int up){

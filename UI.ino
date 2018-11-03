@@ -307,9 +307,7 @@ void cmd_callback( int idx, int v, int up ) {
       loadEEPromPresets(0,0,0);
       break;
     case CMD_EEPROMSETUP:  //Comand to set-up eeprom on a new unit
-      loadDefaultPresets();
-      savePreset(0);
-      savePreset(1);
+      loadFactoryPresets()
       break;
     case CMD_PITCH:
       pitch(pin);
