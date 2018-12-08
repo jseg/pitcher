@@ -350,16 +350,16 @@ void cmd_callback( int idx, int v, int up ) {
     case CMD_CHECKIN:
       switch(uiState){
         case 1:
-          Serial3.println(F("loading"));
+          Serial3.println(F("loading "));
         break;
         case 2:
-          Serial3.println(F("aiming"));
+          Serial3.println(F("aiming "));
         break;
         case 3:
-          Serial3.println(F("aimed"));
+          Serial3.println(F("aimed "));
         break;
         case 4:
-          Serial3.println(F("firing"));
+          Serial3.println(F("firing "));
         break;
       }
   }

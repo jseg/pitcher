@@ -196,7 +196,7 @@ cmd1.begin( Serial, cmd1_buffer, sizeof( cmd1_buffer ) ) //start the serial ui
   loadSq.begin();
   loadSq.onStep(0 , [] (int idx, int v, int up){    //First step of the loadSq is to grab the carriage
     Serial.println(F("loadSq state 1"));
-    Serial3.println(F("loading"));
+    Serial3.println(F("loading "));
     uiState = 1;
     if (Loading.state()){
       mess = 0;
@@ -228,7 +228,7 @@ cmd1.begin( Serial, cmd1_buffer, sizeof( cmd1_buffer ) ) //start the serial ui
     Main.trigger(Main.EVT_STEP);                       //Transistion to Aiming
     mess = 1;
     screen(mess);
-    Serial3.print(F("aiming"));
+    Serial3.print(F("aiming "));
     uiState = 2;
   });
 
@@ -237,7 +237,7 @@ cmd1.begin( Serial, cmd1_buffer, sizeof( cmd1_buffer ) ) //start the serial ui
     fireSq.onStep(0 , moving, moving.EVT_START);    //Step to ensure the rig has stopped moving
     fireSq.onStep(1, [](int idx, int v, int up){    //Throw the ball!
       Serial.println(F("Fire in the hole!"));
-      Serial3.println(F("firing"));
+      Serial3.println(F("firing "));
       uiState = 4;
       mess = 4;
       screen(mess);
@@ -364,7 +364,7 @@ keyedTime.begin(4000)                                   //initialize timer at 3 
          .onTimer( [] ( int idx, int v, int up ) {      //lambda function that turns off motor
       if(uiState == 2){
         uiState = 3;
-        Serial3.println(F("aimed"));
+        Serial3.println(F("aimed "));
       }
     });
 
@@ -394,7 +394,7 @@ void loop() {
   feedback();
   if((keyed==true) && (atSetPoint==true)){
     keyed = false;
-    Serial3.println("aimed");
+    Serial3.println("aimed ");
     uiState = 3;
   }
   if(motors()){
