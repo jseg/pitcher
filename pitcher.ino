@@ -64,6 +64,7 @@ int repeatThrow = 0;
 int batterHand = 1; //0 = left 1 = right
 bool rethrow = false;
 bool keyed = false; //flag to track wether a preset has been keyed in
+int uiState = 1;
 
 //State Machines
 //There are four global machine states "Loading", "Aiming", "Firing", and "Main". "Loading", 
@@ -83,9 +84,9 @@ Atm_command cmd;  //This object is the primary way to control the machine during
 char cmd_buffer[80];   // input buffer
 Atm_command cmd1;  //This object is the primary way to control the machine during development     
 char cmd1_buffer[80];   // input buffer
-enum {CMD_LOAD, CMD_PRESET, CMD_FIRE, CMD_HAND, CMD_EEPROMSETUP, CMD_PITCH, CMD_YAW, CMD_SPRING, CMD_HOME, CMD_MOVE, CMD_STATE, CMD_SERIAL };
+enum {CMD_LOAD, CMD_PRESET, CMD_FIRE, CMD_HAND, CMD_EEPROMSETUP, CMD_PITCH, CMD_YAW, CMD_SPRING, CMD_HOME, CMD_MOVE, CMD_STATE, CMD_SERIAL, CMD_CHECKIN };
 const char cmdlist[] = //must be in the same order as enum
-      "load preset fire hand eepromsetup pitch yaw spring home move state serial"; 
+      "load preset fire hand eepromsetup pitch yaw spring home move state serial checkin"; 
       
 //Objects related to the Ball Loading Sequence
 //"LED" state machine reference: https://github.com/tinkerspy/Automaton/wiki/The-led-machine
@@ -100,6 +101,7 @@ Atm_timer springLoad; //Timer to run the spring motor during loading
 
 
 Atm_step aimSq;
+Atm_timer keyedTime;
 
 //Objects related to Firing Sequence
 Atm_step fireSq;
@@ -195,6 +197,7 @@ cmd1.begin( Serial, cmd1_buffer, sizeof( cmd1_buffer ) ) //start the serial ui
   loadSq.onStep(0 , [] (int idx, int v, int up){    //First step of the loadSq is to grab the carriage
     Serial.println(F("loadSq state 1"));
     Serial3.println(F("loading"));
+    uiState = 1;
     if (Loading.state()){
       mess = 0;
       screen(mess);
@@ -226,6 +229,7 @@ cmd1.begin( Serial, cmd1_buffer, sizeof( cmd1_buffer ) ) //start the serial ui
     mess = 1;
     screen(mess);
     Serial3.print(F("aiming"));
+    uiState = 2;
   });
 
 
@@ -234,6 +238,7 @@ cmd1.begin( Serial, cmd1_buffer, sizeof( cmd1_buffer ) ) //start the serial ui
     fireSq.onStep(1, [](int idx, int v, int up){    //Throw the ball!
       Serial.println(F("Fire in the hole!"));
       Serial3.println(F("firing"));
+      uiState = 4;
       mess = 4;
       screen(mess);
       doorSol.trigger(doorSol.EVT_BLINK);
@@ -355,6 +360,14 @@ cmd1.begin( Serial, cmd1_buffer, sizeof( cmd1_buffer ) ) //start the serial ui
 doorServo.begin(4)
      .step(180,0);
 
+keyedTime.begin(4000)                                   //initialize timer at 3 secs
+         .onTimer( [] ( int idx, int v, int up ) {      //lambda function that turns off motor
+      if(uiState == 2){
+        uiState = 3;
+        Serial3.println(F("aimed"));
+      }
+    });
+
 printEncoders.begin(300)
             .onTimer(printPos)
             .repeat(-1);
@@ -381,7 +394,13 @@ void loop() {
   feedback();
   if((keyed==true) && (atSetPoint==true)){
     keyed = false;
-    Serial.println("aimed");
+    Serial3.println("aimed");
+    uiState = 3;
   }
-  atSetPoint = motors();
+  if(motors()){
+    atSetPoint = true;
+  }
+  else{
+    atSetPoint = false;
+  }
 }

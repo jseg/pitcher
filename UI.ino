@@ -282,6 +282,7 @@ void cmd_callback( int idx, int v, int up ) {
         runPreset(pin);     //function to move set points to a new preset
         atSetPoint = false;
         keyed = true;
+        keyedTime.start(); //Timeout to ensure that fire key becomes available
       }
       return;
     case CMD_FIRE:
@@ -345,6 +346,22 @@ void cmd_callback( int idx, int v, int up ) {
     case CMD_SERIAL:
       printEncoders.start();
       return;
+
+    case CMD_CHECKIN:
+      switch(uiState){
+        case 1:
+          Serial3.println(F("loading"));
+        break;
+        case 2:
+          Serial3.println(F("aiming"));
+        break;
+        case 3:
+          Serial3.println(F("aimed"));
+        break;
+        case 4:
+          Serial3.println(F("firing"));
+        break;
+      }
   }
 }
 
